@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Alternative exercise 3 - Line of Sight (LoS) Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEOG 3527 - GIS Tools for Climate Change Studies</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/BenCretois/GEOG2015">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Alternative exercise 3 - Line of Sight (LoS) Analysis</h1>
+
+</div>
+
+
+<div id="background" class="section level1">
+<h1><span class="header-section-number">1</span> Background</h1>
+<p>This exercise is taken from <a href="https://husnusensoy.wordpress.com/" class="uri">https://husnusensoy.wordpress.com/</a> and has been adapted to this course.</p>
+<p>In this exercise you will perform a Line of Sight (LoS) analysis of a 3D terrain. First you will learn how to generate 3D terrains in R, and then how to perform a LoS analysis.</p>
+<p><strong>Line of Sight analysis</strong> is a commonly used technique in telecommunication industry for A/I (Air Interface) equipment planning and allocation. With the simplest terms LoS is the question whether a point on N-dimensional space is visible by an other observer point. The question can be used to answer where to locate a transceiver on terrain so that it can serve customers on some region A.</p>
+</div>
+<div id="d-terrain-visualization-with-r" class="section level1">
+<h1><span class="header-section-number">2</span> 2D Terrain Visualization with R</h1>
+<div id="simulate-2d-terrain" class="section level2">
+<h2><span class="header-section-number">2.1</span> Simulate 2D terrain</h2>
+<p>Before 3D vizualisation which is more complicated let’s start with simple models. We will start by defining a mathematical function to be used to generate our pseudo terrains (we will simulate terrain). For this purpose trigonometric functions (sin, cos) and polynomial functions are the best ones because of their wavy shapes (did you think your high school mathematics classes were useless? You were wrong). Here is an example of trigonometric terrain</p>
+<pre class="r"><code>x &lt;- seq(from=4,to=10,by=0.01)
+y &lt;- sin(x)+cos(2*x)+sin(3*x)+cos(4*x)+3
+
+plot(x,y,&#39;l&#39;,
+      main=&quot;y=sin(x)+cos(2x)+sin(3x)+cos(4x)+3&quot;,
+      ylab=&quot;height&quot;,col=&quot;blue&quot;)</code></pre>
+<p><img src="Exercise_3_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>You can also choose to have a “polynomial” terrain:</p>
+<pre class="r"><code>x &lt;- seq(from=0,to=6,by=0.01)
+y &lt;- x*(x-1)*(x-2)*(x-3)*(x-4)*(x-5)*(x-6)+100
+ 
+plot(x,y,&#39;l&#39;,
+     main=&quot;y=x(x-1)(x-2)(x-3)(x-4)(x-5)(x-6)+100&quot;,
+     ylab=&quot;height&quot;,col=&quot;blue&quot;)</code></pre>
+<p><img src="Exercise_3_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="so-concretely-what-is-los" class="section level2">
+<h2><span class="header-section-number">2.2</span> So concretely, what is LOS?</h2>
+<p>As you see on the figure below, green point is within line of sight of observer (blue point). However there is pseudo hill between red point and observer. The difference is that the line connecting observer and green point is always greater than the terrain function whereas this is not valid for the line connecting observer and red point (for x ε [~2.5, ~3.5] red line is under the terrain curve).</p>
+<p><img src="Exercise_3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="method-to-find-los" class="section level2">
+<h2><span class="header-section-number">2.3</span> Method to find LoS</h2>
+<p>Let’s define a method to find all visible, invisible, and “far” points on any terrain. Since it is not “easy” to decide analytically whether the line connecting observer and target “is above” the terrain for any terrain function, we will use a simple numeric method.</p>
+<p>We will define a step size small enough (around Spatial Tolerance) to generate all x values between observer and target. Here is what the code below does:</p>
+<ul>
+<li>Evaluate these x values for line function connecting observer and target and terrain function.</li>
+<li>Evaluation is simple for terrain function using height function described in the code below.</li>
+<li>Evaluation of line function is held by function linear.</li>
+<li>The rest is simple as to evaluate euclidean distance and assigning values to status variable.</li>
+</ul>
+<pre class="r"><code>##################
+# Functions
+##################
+# Terrain Function
+height &lt;- function (x) {
+  x*x/3+sin(x)+cos(2*x)+sin(3*x)+cos(4*x)+sin(5*x)+cos(6*x)+3
+}
+ 
+# Linear Function
+linear &lt;- function (x, observer, target) {
+  v &lt;- observer - target
+ 
+  ((x - observer[1])/v[1])*v[2]+observer[2]
+}
+ 
+# Linear Function
+distance &lt;- function (p0,p1) {
+  sqrt(sum((p0-p1)^2))
+}
+ 
+##################
+# Input
+##################
+
+# Observer location
+observer&lt;-c(1.5,9)
+ 
+# Target on terrain
+target &lt;- c(5, height(5))
+ 
+# Max visible distance
+maxVisibleDistance = 4
+ 
+# Generate points with a step size of 0.1
+x &lt;- seq(from=min(observer[1],target[1]),
+         to=max(observer[1],target[1]),
+         by=0.1)
+ 
+# Terrain Height
+h &lt;- height(x)
+ 
+# y Values
+y &lt;- linear(x, observer, target)
+ 
+# LoS Analysis
+aboveTerrain &lt;- round((y-h),2) &gt;= 0.00
+ 
+# First Rule
+visible &lt;- !is.element(FALSE,aboveTerrain)
+if (visible){
+  # Second Rule
+  d &lt;- distance(observer, target)
+  if(d &lt;= maxVisibleDistance){
+    status &lt;- &quot;LoS&quot;
+  }else{
+    status &lt;- &quot;non-LoS due to Distance&quot;
+  }
+}else{
+  status &lt;- &quot;non-LoS due to Blocking&quot;
+}</code></pre>
+</div>
+</div>
+<div id="d-terrain-visualization-with-r-1" class="section level1">
+<h1><span class="header-section-number">3</span> 3D Terrain Visualization with R</h1>
+<p>One of the first differences in 3D LoS analysis is the terrain visualization. We can not use plot function for proper visualization is 3D. Fortunately R has all packages you need for any type of problem. I will use rgl package which can be downloaded using install.packages(“rgl”) command.</p>
+<p>Once you have the rgl package, generating pseudo 3D terrains is a trivial thing.</p>
+<p>Write the following code in your script:</p>
+<pre class="r"><code>install.packages(&#39;rgl&#39;)</code></pre>
+<pre class="r"><code>library(rgl)</code></pre>
+<pre><code>## Warning: package &#39;rgl&#39; was built under R version 3.6.3</code></pre>
+<p>Here we generate the 3D terrain you will be using for the LoS analysis.</p>
+<pre class="r"><code># 3D Terrain Function
+height &lt;- function (x,y) {
+  sin(x)+0.125*y*sin(2*x)+sin(y)+0.125*x*sin(2*y)+0.25
+}
+# Terrain boundaries -8&lt;=x&lt;=8 and -8&lt;=y&lt;=8
+boundary &lt;- c(-8,8)
+# Terrain grid with a step size of 0.1 units
+xy&lt;-seq(from=boundary[1],to=boundary[2],by=0.1)
+
+# Evaluate all heights for all grid points
+z&lt;-outer(xy,xy,height)</code></pre>
+<p>Here you visualize the 3D terrain and determine the apperance by setting the color</p>
+<pre class="r"><code># A few visualization staff
+zlim &lt;- range(z)
+zlen &lt;- zlim[2] - zlim[1] + 1
+colorlut &lt;- terrain.colors(zlen) # height color lookup table
+col &lt;- colorlut[ z-zlim[1]+1 ] # assign colors to heights for each point
+
+# Draw the terrain
+rgl.open()
+bg3d(&quot;gray&quot;)
+rgl.surface(xy, xy, z,
+            color=col)
+col &lt;- colorlut[ z-zlim[1]+1 ] # assign colors to heights for each point</code></pre>
+<p>After drawing the terrain an RGL device window with the result will appear.</p>
+<p><img src="docs/Exercise_3/Capture1.PNG" width="150%" /></p>
+<p>A new function in this script is outer function which generates the product of a vector and a row-vector to have a matrix (product of a row-vector with a vector/column-vector is obviously a scalar value and named to be dot/inner product). The third parameter of the function provides us the mechanism to apply a given function (height in our case) for each element of this matrix. Obviously you can play with height function to have fancier 3D terrains and to have best visualization you may need viewpoint routine in rgl package .</p>
+<div id="los-in-3d-terrain" class="section level2">
+<h2><span class="header-section-number">3.1</span> LoS in 3D Terrain</h2>
+<p>Line of Sight analysis on 3D terrain uses the same principles as it does in 2D. Use the following R script to decide on status of a point (invisible, visible, visible but far away)</p>
+<pre class="r"><code>##################
+# Functions
+##################
+
+# 3D Terrain Function
+height &lt;- function (x,y) {
+  sin(x)+0.125*y*sin(2*x)+sin(y)+0.125*x*sin(2*y)+0.25
+}
+
+# Linear Function
+linear &lt;- function (x, observer, target) {
+  v &lt;- observer - target
+ 
+  y &lt;- ((x - observer[1])/v[1])*v[2]+observer[2]
+  z &lt;- ((x - observer[1])/v[1])*v[3]+observer[3]
+ 
+  data.frame(x=x,y=y, z=z)
+}
+ 
+# Linear Function
+distance &lt;- function (p0,p1) {
+  sqrt(sum((p0-p1)^2))
+}
+ 
+###########
+# Input
+##################
+# Observer location
+observer&lt;-c(10,10,1)
+ 
+# Target on terrain
+target &lt;- c(5, 5, height(5,5))
+ 
+# Max visible distance
+maxVisibleDistance = 4
+ 
+# Generate points with a step size of 0.1
+x &lt;- seq(from=min(observer[1],target[1]),
+         to=max(observer[1],target[1]),
+         by=0.1)
+ 
+# All points on line
+line &lt;- linear(x, observer, target)
+
+# Terrain Height
+h &lt;- height(line$x,line$y)
+ 
+# LoS Analysis
+aboveTerrain &lt;- round((line$z-h),2) &gt;= 0.1
+ 
+# First Rule
+visible &lt;- !is.element(FALSE,aboveTerrain)
+if (visible){
+  # Second Rule
+  d &lt;- distance(observer, target)
+  if(d &lt;= maxVisibleDistance){
+    status &lt;- &quot;LoS&quot;
+  }else{
+    status &lt;- &quot;non-LoS due to Distance&quot;
+  }
+}else{
+  status &lt;- &quot;non-LoS due to Blocking&quot;
+}</code></pre>
+</div>
+<div id="visualizing-los-on-3d-terrain" class="section level2">
+<h2><span class="header-section-number">3.2</span> Visualizing LoS on 3D Terrain</h2>
+<p>Until this point we have analyzed LoS of a single point on 2D-3D terrains. But usually network analists wish to know LoS map of the terrain with respect to a given observer. In other words we need to visually understand which regions on 3D terrain are visible by the observer, invisible by the observer due to blocking, or further than the limit from the observer.</p>
+<p>Here you will generate a LoS map of our pseudo 3D terrain with respect to an observer with a given set of coordinates and maximum service range(green vs yellow regions).</p>
+<pre class="r"><code>##################
+# Functions
+##################
+# 3D Terrain Function
+height &lt;- function (point) {
+  sin(point$x)+0.125*point$y*sin(2*point$x)+sin(point$y)+0.125*point$x*sin(2*point$y)+3
+}
+
+# Linear Function
+linear &lt;- function (px, observer, target) {
+  v &lt;- observer - target
+ 
+  y &lt;- ((px - observer[1])/v[1])*v[2]+observer[2]
+  z &lt;- ((px - observer[1])/v[1])*v[3]+observer[3]
+ 
+  data.frame(x=px,y=y, z=z)
+}
+ 
+
+# Linear Function
+distance &lt;- function (terrain, observer) {
+  sqrt((terrain$x-observer[1])^2+(terrain$y-observer[2])^2+(terrain$height-observer[3])^2)
+}
+
+LoS &lt;- function(terrain, observer, maxVisibleDistance){
+  status = c()
+  for (i in seq(1:nrow(terrain))) {
+    if (observer[1] == terrain$x[i] &amp;&amp; observer[2] == terrain$y[i]){
+      if(observer[3] &gt;= terrain$height[i]){
+        if (terrain$dist2observer[i] &gt; maxVisibleDistance){
+          status &lt;- c(status,&quot;yellow&quot;)
+        }else{
+          status &lt;- c(status,&quot;green&quot;)
+        }
+      }else{
+        status &lt;- c(status,&quot;red&quot;)
+      }  
+      }else{
+      # All points on line
+      line &lt;- linear(seq(from=min(observer[1],terrain$x[i]),
+                         to=max(observer[1],terrain$x[i]),
+                         by=0.1),
+                     observer,
+                     c(terrain$x[i],terrain$y[i],terrain$height[i]))
+      # Terrain Height
+      h &lt;- height(line)
+ 
+      # LoS Analysis
+      aboveTerrain &lt;- round((line$z-h),2) &gt;= 0.00
+ 
+      visible &lt;- !is.element(FALSE,aboveTerrain)
+      if (visible){
+        # Second Rule
+        if(terrain$dist2observer[i] &lt;= maxVisibleDistance){
+          status &lt;- c(status,&quot;green&quot;)
+        }else{
+          status &lt;- c(status,&quot;yellow&quot;)
+        }
+      }else{
+        status &lt;- c(status,&quot;red&quot;)
+      }
+    }
+  }
+ 
+  status
+}</code></pre>
+<p>Create linear function</p>
+<pre class="r"><code># Input
+##################
+# Observer location
+observer&lt;-c(0.835597146302462, -1.71025141328573, 6)
+ 
+# Max visible distance
+maxVisibleDistance = 8
+ 
+# Generate points with a step size of 0.1
+x &lt;- seq(from=-8,to=8,by=0.4)
+ 
+xygrid &lt;- expand.grid(x=x,
+                      y=x)
+ 
+terrain &lt;- data.frame(xygrid,
+                      height=height(xygrid)
+                      )
+ 
+terrain &lt;- data.frame(terrain,
+                      dist2observer=distance(terrain, observer)
+                      )
+ 
+terrain &lt;- data.frame(terrain,
+                      status = LoS(terrain, observer, maxVisibleDistance))
+ 
+rgl.open()
+rgl.surface(x, x,
+            matrix(data=terrain$height,nrow=length(x),ncol=length(x)),
+            col=matrix(data=terrain$status,nrow=length(x),ncol=length(x))
+            )
+bg3d(&quot;gray&quot;)
+
+# Mark the observer
+spheres3d(c(observer[1]),
+          c(observer[3]),
+          c(observer[2]),
+          radius=0.5,
+          color=&quot;white&quot;
+          )
+ 
+rgl.viewpoint(-60,30)</code></pre>
+<p>At the end of the analysis you should have something like this in your window:</p>
+<p><img src="docs/Exercise_3/Capture2.PNG" width="150%" /></p>
+<p>Hand in:</p>
+<ul>
+<li>Here we did LoS analysis in the context of telecommunication, can you think of any other area where LoS analysis could be useful? And why?</li>
+<li>In the first part (2D vizualisation) we have shown how to simulate a 2D terrain with <strong>cos</strong> and <strong>sin</strong> function. Play around with the functions and create your own simulated terrain</li>
+<li>Change the coordinates of the observer and change the colors of the last map created. What does your colors represent?</li>
+<li>Bonus point: add a legend to your map</li>
+</ul>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

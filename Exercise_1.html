@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Alternative exercise 1 - Intro to GIS in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEOG 3527 - GIS Tools for Climate Change Studies</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/BenCretois/GEOG2015">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Alternative exercise 1 - Intro to GIS in R</h1>
+
+</div>
+
+
+<div id="a-first-note" class="section level1">
+<h1><span class="header-section-number">1</span> A first note</h1>
+<p><a href="https://www.google.com/?hl=fr">Google</a>: You <strong>will</strong> run into problems while using R, it happens <strong>all the time</strong> and for <strong>all level</strong>. A wise saying is that a programmer is good because he knows what to search on Google. Before sending a question because something does not work, <strong>search on google!</strong>. <strong>Then</strong> if you struggled for a long time and are still stuck you can post your question on BlackBoard or send me a mail at <strong><a href="mailto:benjamin.cretois@ntnu.no" class="email">benjamin.cretois@ntnu.no</a></strong></p>
+</div>
+<div id="set-up-instructions-quick-introduction-to-r" class="section level1">
+<h1><span class="header-section-number">2</span> Set up instructions &amp; quick introduction to R</h1>
+<p>First of all, R and RStudio are two different programs. R is the underlying statistical computing environment (the program you use to do the statistics and GIS), but using R alone is no fun (it is very ugly!). RStudio is a <b>graphical integrated development environment (IDE)</b> that makes using R much easier and more interactive. You need to install R before you install RStudio.</p>
+<div id="install-r" class="section level3">
+<h3><span class="header-section-number">2.0.1</span> Install R</h3>
+<p>I assume that some of you have Mac OS while others have windows (some of you may have Linux). No problem in all cases!</p>
+<p>for MAC download the R-3.6.1.pkg from this <a href="https://cran.r-project.org/bin/macosx/">website</a> for Windows download R from <a href="http://cran.r-project.org/bin/windows/base/release.htm">here</a> If you have Linux I’m sure you can easily find a way to install R ;)</p>
+<p>Now you can open R, see how ugly it is! To make the visual better let’s install Rstdio!</p>
+</div>
+<div id="install-rstdio" class="section level3">
+<h3><span class="header-section-number">2.0.2</span> Install Rstdio</h3>
+<p>Download and install the version 1.1.463 from the <a href="https://support.rstudio.com/hc/en-us/articles/206569407-Older-Versions-of-RStudio">Rstudio website</a>. Make sure you download Mac OS X if you are using a Mac and Windows if you are using … Windows.</p>
+</div>
+<div id="r-and-rstudio" class="section level3">
+<h3><span class="header-section-number">2.0.3</span> R and Rstudio</h3>
+<hr />
+<p>Okay, I have been a little bit fast with my explanations about R and R studio. In this section I will go more in details.</p>
+</div>
+<div id="what-is-r-what-is-rstudio" class="section level2">
+<h2><span class="header-section-number">2.1</span> What is R? What is RStudio?</h2>
+<p>The term “R” is used to refer to both the programming language to write scripts and the software (“environment”) that interprets the scripts written in R. It is an alternative to other statistical packages such as SPSS (what was used for this course before), Stata or Matlab. R lets you perform a wide variety of things: data vizualisation, statistics, GIS and a whole lot more! In fact, this document is written in R :)</p>
+<p>R studio is an interface which allows you to interact with R in a much funnier way. You can write your scripts, open projects and make your programming life easier.</p>
+</div>
+<div id="gis-in-r" class="section level2">
+<h2><span class="header-section-number">2.2</span> GIS in R</h2>
+<p>In this exercise we won’t do statistics but only simple GIS tasks. Now, why learning R in complement of ArcGIS?</p>
+<ul>
+<li>R is one of the most used programming language</li>
+<li>R is free and open source</li>
+<li>R produces high quality graphics</li>
+<li>R is a programming language, which means that you can automatize tasks and save everything in a script, making everything reproducible</li>
+</ul>
+</div>
+<div id="knowing-your-way-around-rstudio" class="section level2">
+<h2><span class="header-section-number">2.3</span> Knowing your way around RStudio</h2>
+<p>Let’s start by learning about RStudio, which is once again an Integrated Development Environment (IDE) for working with R. The RStudio IDE is an open source product and is free.</p>
+<p>During this course - and hopefully after this course - you will use RStudio IDE to write code, navigate the files on our computer, inspect the variables we are going to create, and visualize the plots we will generate.</p>
+<p><img src="docs/Exercise_1/R.png" width="80%" /></p>
+<p>RStudio is divided into 4 “Panes”:</p>
+<ul>
+<li>the Source for your scripts and documents (top-left, in the default layout),</li>
+<li>the R Console (bottom-left),</li>
+<li>your Environment/History (top-right), and</li>
+<li>your Files/Plots/Packages/Help/Viewer (bottom-right).</li>
+</ul>
+<p>Note that the placement of these panes and their content can be customized (see main Menu, Tools -&gt; Global Options -&gt; Pane Layout). I must say that I like it as it is but feel free to modify it!</p>
+</div>
+<div id="open-a-script" class="section level2">
+<h2><span class="header-section-number">2.4</span> Open a script</h2>
+<p>The basis of programming is that we write down instructions for the computer to follow, and then we tell the computer to follow those instructions. We write, or <strong>code</strong>, instructions in R because it is a common language that both the computer and we can understand. We call the instructions <strong>commands</strong> and we tell the computer to follow the instructions by <strong>executing</strong> (also called running) those commands.</p>
+<p>Because we want to keep our code and workflow, it is better to type the commands we want in the script editor, and save the script. This way, there is a complete record of what we did, and anyone (including our future selves!) can easily replicate the results on their computer.</p>
+<p>To open a new script follow these steps: On the main menu go to <code>Files</code> &gt; <code>New File</code> &gt; <code>R script</code> to open a new script</p>
+<p>The most important aspects of making your code comprehensible for others and your future self is adding comments about why you did something. You can write comments directly in your script, and tell R not no execute those words simply by putting a hashtag <code>#</code> before you start typing the comment.</p>
+<p>For instance like this:</p>
+<pre class="r"><code>#I comment by adding a hashtag
+view(data) #I can directly comment a line of code like this</code></pre>
+</div>
+</div>
+<div id="basic-gis-tools-in-r" class="section level1">
+<h1><span class="header-section-number">3</span> Basic GIS tools in R</h1>
+<hr />
+<p>In this exercise I will present the (very) basic functions of R for doing GIS.</p>
+<div id="prerequisite" class="section level2">
+<h2><span class="header-section-number">3.1</span> Prerequisite</h2>
+<p>For this part of the exercise you will need multiple libraries. In R, a library extends the number of function in R. It is like adding a google to a rifle, you improve its capability.</p>
+<p>For this exercise we will need a few packages so you first need to install (write the following code in your script):</p>
+<pre class="r"><code>install.packages(&#39;tidyverse&#39;)
+install.packages(&#39;sf&#39;)
+install.packages(&#39;raster&#39;)
+install.packages(&#39;spData&#39;)</code></pre>
+<p>The packages take a bit of time to be installed, be patient and have a look at the additional ressources!</p>
+<p>You then need to tell R to use these packages:</p>
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(raster)
+library(spData)</code></pre>
+</div>
+<div id="load-the-data" class="section level2">
+<h2><span class="header-section-number">3.2</span> Load the data</h2>
+<p>We will open a dataset named “world”. It countains diverse informations about the countries of the world. The dataset is comprised in the spData package and you do not need to import it from your computer.</p>
+<pre class="r"><code># We first import the dataset in R
+world &lt;- world
+
+# Vizualise what are the variables stored in the dataset
+names(world)</code></pre>
+<pre><code>##  [1] &quot;iso_a2&quot;    &quot;name_long&quot; &quot;continent&quot; &quot;region_un&quot; &quot;subregion&quot; &quot;type&quot;     
+##  [7] &quot;area_km2&quot;  &quot;pop&quot;       &quot;lifeExp&quot;   &quot;gdpPercap&quot; &quot;geom&quot;</code></pre>
+<pre class="r"><code># Make a quick map of the world population, the choice of the colours is bad and we will work on better maps do not worry!
+plot(world[&quot;pop&quot;])</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The first thing to notice is that the <strong>world</strong> object has 177 obs (which refers to observations, in this case these are the countries) and 11 variables (which are what we have recorded in the countries including their population, gpd, life expectancy …)</p>
+<p>Other useful functions to learn more about our dataset include <code>summary()</code>, <code>head()</code> and <code>tail()</code>, try them out! Now that we know a bit more about our dataset and what it contains we will isolate the countries we are interested in. We will work with Europe.</p>
+</div>
+<div id="gis-work" class="section level2">
+<h2><span class="header-section-number">3.3</span> GIS work</h2>
+<p><strong>In my case I work with Europe but you have to use your country given in the “AContinent4Me” pdf</strong></p>
+<p>To isolate the European area we need to use the function <code>filter()</code></p>
+<pre class="r"><code># Create an object europe which contains all european countries. 
+europe &lt;- world %&gt;% filter(continent == &quot;Europe&quot;)
+
+# We check if our function worked
+plot(europe[&quot;pop&quot;])</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>In the bunch of code above we are basically saying “I want <strong>europe</strong> to be all the countries of <strong>world</strong> for which the <strong>column</strong> continent is equal to <strong>Europe</strong>”. We use the operator <code>==</code> which stands for <strong>equal to</strong></p>
+<p>So far we have isolate Europe but we do not want to include Russia or French polynesia!</p>
+<p>We can remedy this problem by filtering out Russia:</p>
+<pre class="r"><code># Here I filter out Russia from the dataset.
+europe &lt;- europe %&gt;% filter(name_long != &#39;Russian Federation&#39;)</code></pre>
+<p>Contrary to previously, here we say “I want <strong>europe</strong> to be <strong>europe</strong> for which the column <strong>name_long</strong> do not contain <strong>Russian Federation</strong> (which is the ISO code for Russia)”. The operator <code>!=</code> stands for <strong>non-equal to</strong></p>
+<p>We will also create a “bounding box” or BB which helps us to isolate the area of interest and zoom on it.</p>
+<p>Note that the bounding box will be different depending on your continent. You will have to change the values below. How to figure out the bounding box for your continent? Look at <a href="http://bboxfinder.com/#0.000000,0.000000,0.000000,0.000000">this website</a>, you will find the coordinates in the lower left of your screen. I let you figure out what is x and what is y.</p>
+<p><img src="docs/Exercise_1/coordinates.png" width="150%" /></p>
+<pre class="r"><code># First we need to set the delimination of the obunding box. These are the geographical coordinates and we are using the projection WGS84
+xmin &lt;- -27.06
+xmax &lt;-  43.28
+ymin &lt;- 33.33
+ymax &lt;- 72.18
+
+# Here, I tell R to create the BB based on the coordinates I set. crs stands for coordinate reference system. We set it to 4326 which is the code for WGS84.
+bbox_europe &lt;- st_bbox(c(xmin=-27.06, xmax=43.28, 
+                         ymin=33.33, ymax=72.18), crs=4326)
+
+# I need to transform the bbox to a &quot;simple feature column (sfc)&quot; to be able to do some GIS tasks with it.
+bbox_europe_sfc &lt;- st_as_sfc(bbox_europe)
+
+# I finally &quot;intersect&quot; the BB and europe to get what I want -&gt; a zoom in my area of interest.
+europe_final &lt;- st_intersection(europe, bbox_europe_sfc)</code></pre>
+<pre><code>## although coordinates are longitude/latitude, st_intersection assumes that they are planar</code></pre>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries</code></pre>
+<pre class="r"><code># Plot the final output!
+plot(europe_final[, &quot;pop&quot;])</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="import-a-raster-of-world-temperature" class="section level2">
+<h2><span class="header-section-number">3.4</span> Import a raster of world temperature</h2>
+<p>Drawing basic maps, filtering in and out areas of interest is nice and useful but there is much more you can do in R!</p>
+<p>Here, we will import a raster dataset and link it to the european countries so we can vizualize the <strong>annual mean temperatures</strong> in the different European countries.</p>
+<p>First we need to extract the climate data and load them in R. To get the data you can:</p>
+<ul>
+<li>Load them online from the <a href="https://www.worldclim.org/">worldclim data website</a>.</li>
+<li>Through the package <code>raster</code>, which we already loaded in R.</li>
+</ul>
+<p>Given that the website is being redisigned (click on the link) we will load the data directly in R. Basically, the <code>raster</code> package has a function which directly asks internet to retrieve the data for us and load it in R, making our life very easy. This is done using the bunch of code below:</p>
+<p><strong>Note that I am isolating the raster of the annual mean temperature, however you may work on a different raster dataset. Refer to ARaster4me to know with which raster you will be working</strong>.</p>
+<p>Refer to <a href="https://www.worldclim.org/data/bioclim.html">this website</a> to know what the number of your raster represent.</p>
+<pre class="r"><code># With this line of code we ask R to store all the 12 climatic rasters available in the object &quot;worldclim_data&quot; (for a full description of them, refers to the website). The object worldclim_data is now a list of 12 rasters
+worldclim_data &lt;- getData(&quot;worldclim&quot;, var=&quot;bio&quot;, res=10)
+
+# I only want the temperature data, which is the first raster from the list. We isolate the first raster from the list above.
+
+temp &lt;- worldclim_data[[1]] # NOTE THAT YOU NEED TO REPLACE THE NUMBER WITH YOUR RASTER! 
+
+# And we plot the temperatures!
+plot(temp)</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="some-basic-raster-manipulations" class="section level2">
+<h2><span class="header-section-number">3.5</span> Some basic raster manipulations</h2>
+<p>The temperatures are in degree celsius. Now you might say that there is no way the temperature in Costa Rica is close to 300 degrees celsius and you would be totally right.</p>
+<p>WorldClim data has a scale factor of 10, meaning that a temperature of 300 is in reality 30 degrees celsius. The raster are rescaled to save some memory, integer numbers consume less memory than decimal numbers.</p>
+<p>In our case we do not really care about saving memory so we will rescale the <code>temp</code> raster. It is very basic calculation similar to the <code>raster calculator</code> function present in ArcGIS.</p>
+<pre class="r"><code># In a nutshell, we divide all cells of the raster by 10, giving us the real temperatures in degree celsius.
+temp_rescaled &lt;- temp / 10
+plot(temp_rescaled)</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>A very useful thing we can do it to crop the raster to the extent of Europe, just not to have the entire world! For that we use the <code>mask()</code> function.</p>
+<pre class="r"><code># Crop the raster. First argument is your the temperature raster and second argument is the shapefile of Europe.
+temp_crop &lt;- mask(temp_rescaled, europe_final)
+
+# Plot the raster
+plot(temp_crop)</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>The map is small but the important is that the function worked as we expected. We will use this object later when drawing the maps.</p>
+<p>Now that we have rescaled and visualize our raster we want to know the annual mean temperature for each European countries. In this raster, a pixel represents an area of 10x10km and we need to compute the mean of all cells within a specific country. For that we use the function <code>extract()</code></p>
+<pre class="r"><code># With this line we make the average of the raster cells values within a specific country. The arguments are respectively the raster, the shapefile of Europe, the operation you want to do (fun) and we specify that we remove the cells with missing values
+europe_temp &lt;- extract(temp_rescaled, europe_final, fun=mean, na.rm=TRUE)
+
+# The code above will create a vector of 32 values. This represent the 32 temperature means for each country. But we do not know what is the respective value for each country yet.
+
+# Now we need to append the vector of values to our European dataset to see the average temperature per country
+europe_final$temperature &lt;- europe_temp
+
+# Finally we plot our results
+plot(europe_final[&quot;temperature&quot;])</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Et voilà! Now we have the average mean temperature for each country in Europe!</p>
+<p>The map is not very pretty though and we will do better …</p>
+</div>
+</div>
+<div id="drawing-a-beautiful-map-with-r" class="section level1">
+<h1><span class="header-section-number">4</span> Drawing a beautiful map with R</h1>
+<hr />
+<p>We can do better than what we did above. Here I will introduce ways of getting more fancy maps in R. Why R over ArcGIS for drawing maps? Because we have much more freedom and it is easier to customize.</p>
+<div id="prerequisite-1" class="section level2">
+<h2><span class="header-section-number">4.1</span> Prerequisite</h2>
+<p>In this part we will need another package. <code>tmap</code> is a package which have been released in 2016 and is relatively new. However, it is very easy to manipulate and give you a lot of flexibility to create maps.</p>
+<p>As done in the previous section we need to install the package and load it in R:</p>
+<pre class="r"><code>install.packages(&#39;tmap&#39;)</code></pre>
+<pre class="r"><code>library(tmap)</code></pre>
+</div>
+<div id="tmap-basics" class="section level2">
+<h2><span class="header-section-number">4.2</span> tmap basics</h2>
+<p><code>tmap</code> follow the <strong>grammar of graphics</strong>. This involves a separation between the input data and the aesthetics (how data are vizualised). This also means that <code>tmap</code> works with <strong>layers</strong>. It is like adding brick to a construction.</p>
+<p>The basic building block of our construction is <code>tm_shape()</code>. This is followed <strong>by one or more layer element</strong> such as <code>tm_fill()</code> and / or <code>tm_dots</code> (there is much more …).</p>
+<p>Because examples are more instructive than text here is some code (explained of course).</p>
+<pre class="r"><code># Add a &#39;fill&#39; layer to your map - grey is the base option
+tm_shape(europe_final) +
+  tm_fill()</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code># Add the country borders to your map
+tm_shape(europe_final) +
+  tm_borders()</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<pre class="r"><code># Combine the two above to fill the countries
+tm_shape(europe_final) +
+  tm_fill() +
+  tm_borders()</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
+<p>The object passed to <code>tm_shape()</code> is europe_final, which contains the European countries. Layers are then added to represent europe_final visually, with <code>tm_fill</code> and <code>tm_shape</code>. So as said we <strong>add</strong> aesthetic layers using the operator <code>+</code>.</p>
+<p>A useful feature of <code>tmap</code> is that it can store objects representing maps, which make it possible to save maps and do other operations with it.</p>
+<pre class="r"><code># We store the map in the map_europe object
+map_europe &lt;- tm_shape(europe_final) +
+  tm_polygons()
+
+# We plot the map
+map_europe</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>New shapes can be added via <code>+ tm_shape(new_obj)</code>. For instance, if we want to overlay our raster layer on top of our European map we would write</p>
+<pre class="r"><code>map_europe &lt;- tm_shape(europe_final) +
+  tm_polygons() +
+  tm_shape(temp_crop) +
+  tm_raster(alpha=0.7)
+map_europe</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Here we basically add the raster on top of the European map with <code>tm_raster</code>. Note that I included an alpha, which represent the transparancy, so we can see the borders of the European countries.</p>
+<p>Now, you can also plot what we calculated before which is the annual mean temperature for each country. We included this variable in the europe_final dataset and we can tell <code>tm_fill()</code> to add colors depending on this variable only.</p>
+<pre class="r"><code># Sometimes R think that a variable is categorical (for instance blue, red, yellow) are categories. To make sure that R understands that temperature is a numeric variable (with numbers) we specify this with the function &quot;as.numeric()&quot;
+europe_final$temperature &lt;- as.numeric(europe_final$temperature)
+
+# I store the map in the object map_europe. I specify that I want the color (col) of the map to represent the column &quot;temperature&quot;.
+map_europe &lt;- tm_shape(europe_final) +
+  tm_polygons(col=&quot;temperature&quot;)
+
+# Show the map!
+map_europe</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>The maps look a bit better now right?</p>
+</div>
+<div id="color-settings-and-other-manipulations" class="section level2">
+<h2><span class="header-section-number">4.3</span> Color settings and other manipulations</h2>
+<p>Color settings are an important part of map making. The legend is also important to set as it could sometimes be misleading.</p>
+<p>You can set the breaks you want for the legend of your map. For instance, I can choose breaks of 5 degree celsius instead of the default 2 degrees:</p>
+<pre class="r"><code># I create an object (here a vector) containing the desired breaks
+breaks &lt;- c(0,5,10,15,20)
+
+# I plot the map with the desired breaks
+tm_shape(europe_final) + 
+  tm_polygons(col=&quot;temperature&quot;, breaks=breaks)</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>I can also choose to have another color palette. There is a lot of color palette available in R. Check the <a href="https://datavizpyr.com/introduction-to-color-palettes-in-r-with-rcolorbrewer/">palette and there codes</a>. For instance I choose purple to represent the temperature (even though very misleading!)</p>
+<pre class="r"><code>tm_shape(europe_final) + 
+  tm_polygons(col=&quot;temperature&quot;, breaks=breaks, palette=&quot;Purples&quot;)</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>There is much more you can do and I would advise you to have a look at the <strong>GeocompR</strong> ressource than I added in the Additional ressources section.</p>
+</div>
+<div id="layouts" class="section level2">
+<h2><span class="header-section-number">4.4</span> Layouts</h2>
+<p>The map layout refers to the combination of all maps elements into a cohesive map. Map elements include the object to be mapped, the title, the scale bar, margins and aspect ratio.</p>
+<p>Additional elements such as the north arrow and scale bar have their own functions: <code>tm_compass()</code> and <code>tm_scale_bar()</code></p>
+<pre class="r"><code># The layers we have been using so far
+tm_shape(europe_final) +
+  tm_polygons(col=&quot;temperature&quot;) +
+  
+  # Now we add the north arrow. You can choose the position, choice include &quot;center&quot;, &quot;top&quot;, &quot;bottom&quot;, &quot;left&quot; and &quot;right&quot;. You also have multiple options for the north arrow.
+  tm_compass(type=&quot;8star&quot;, position = c(&quot;center&quot;, &quot;top&quot;)) +
+  
+  # And we also add the scale bar. You can also choose the breaks.
+  tm_scale_bar(breaks=c(0,100,500))</code></pre>
+<pre><code>## Scale bar set for latitude km and will be different at the top and bottom of the map.</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>If you want to be even more fancy you can add a background color to the map (we can represent the see for instance) and place the legend in a more relevant place with <code>legend.position</code>. You can also add a title to your map and</p>
+<pre class="r"><code>tm_shape(europe_final) +
+  tm_polygons(col=&quot;temperature&quot;) +
+  tm_layout(bg.color = &quot;lightblue&quot;,
+            legend.position = c(&quot;left&quot;, &quot;bottom&quot;))</code></pre>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>You may want to modify a bit more the map. Browse in the ressources I added and use <a href="www.google.com">this website</a> for finding what you want to do.</p>
+</div>
+<div id="save-your-map" class="section level2">
+<h2><span class="header-section-number">4.5</span> Save your map</h2>
+<p>Now is time to save your map! It is very simple. In the <code>plot</code> section just click on <code>Export</code> and <code>Save as Image</code>. You can then choose the directory in which you want to save your image.</p>
+<p><img src="docs/Exercise_1/R.png" width="80%" /></p>
+</div>
+<div id="note-for-the-end-of-the-exercise" class="section level2">
+<h2><span class="header-section-number">4.6</span> Note for the end of the exercise</h2>
+<p>I know that it is a lot to digest, especially if you are not use to programming but it really worth to learn some R coding as this is a language extremely used. In this exercise you have learnt basic coding in R.</p>
+<p>As a motivation here is what you can do with R with some advanced coding:</p>
+<p><img src="docs/Exercise_1/SwitzerlandMap.PNG" width="80%" /></p>
+<p>Now your turn!</p>
+</div>
+</div>
+<div id="tasks-and-handout" class="section level1">
+<h1><span class="header-section-number">5</span> Tasks and handout</h1>
+<ul>
+<li>Draw two maps of <strong>your region of interest</strong>. One with <strong>your raster</strong> raster layer overlaid on it (with the <code>alpha</code> so we can vizualize the borders) and another with with the mean <strong>your raster</strong> for each country</li>
+<li>Integrate your maps in your storymap</li>
+<li>In the hand out answer these questions:</li>
+<li>What does your map indicate?</li>
+<li>What are the main differences between R and ArcGIS?</li>
+<li>What are the advantages of R over ArcGIS? What are the weaknesses?</li>
+</ul>
+<p>For your assignement the maps should look like this (or more fancy):</p>
+<p><img src="Exercise_1_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Good luck for this exercise!</p>
+</div>
+<div id="additional-ressources" class="section level1">
+<h1><span class="header-section-number">6</span> Additional ressources</h1>
+<p><a href="https://geocompr.robinlovelace.net/">GeocompR</a>: an amazing resource, very compact and will help you to improve tremendously your GIS in R (if you want to continue of course!)</p>
+<p><a href="https://www.r-spatial.org/">R spatial</a>: which is a serie of tutorials regarding doing spatial analysis in R. There is things that are more complex than others.</p>
+<p><a href="https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html">More documentation on tmap</a>: A very good tutorial on how to use tmap, with more advanced functions that we are using in this exercise.</p>
+<p><a href="https://www.google.com/?hl=fr">Google</a>: As said in the first note, you <strong>will</strong> need it</p>
+<hr />
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

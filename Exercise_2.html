@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Alternative exercise 2 - Transports</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.0.2/leaflet.js"></script>
+<script src="site_libs/leaflet-providers-1.1.17/leaflet-providers.js"></script>
+<script src="site_libs/leaflet-providers-plugin-2.0.2/leaflet-providers-plugin.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEOG 3527 - GIS Tools for Climate Change Studies</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/BenCretois/GEOG2015">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Alternative exercise 2 - Transports</h1>
+
+</div>
+
+
+<div id="prerequisite" class="section level1">
+<h1><span class="header-section-number">1</span> Prerequisite</h1>
+<p>This exercise is a reduced version of <a href="https://geocompr.robinlovelace.net/">https://geocompr.robinlovelace.net/</a> Chapter 13. If you want more precision and the exercise in full length please refer to it.</p>
+<p>For this exercise you will need the following packages:</p>
+<pre class="r"><code>library(sf)
+library(dplyr)
+library(spDataLarge)
+library(stplanr)      # geographic transport data package</code></pre>
+<pre><code>## Warning: package &#39;stplanr&#39; was built under R version 3.6.3</code></pre>
+<pre class="r"><code>library(tmap)</code></pre>
+</div>
+<div id="background" class="section level1">
+<h1><span class="header-section-number">2</span> Background</h1>
+<p>Transport is an inherently geospatial activity. It involves traversing continuous geographic space between A and B, and infinite localities in between. It is therefore unsurprising that transport researchers have long turned to geocomputational methods to understand movement patterns and that transport problems are a motivator of geocomputational methods.</p>
+<p>This exercise introduces the geographic analysis of transport systems at different geographic levels, including:</p>
+<ul>
+<li><p><strong>Areal units:</strong> transport patterns can be understood with reference to zonal aggregates such as the main mode of travel (by car, bike or foot, for example) and average distance of trips made by people living in a particular zone.</p></li>
+<li><p><strong>Desire lines:</strong> straight lines that represent ‘origin-destination’ data that records how many people travel (or could travel) between places (points or zones) in geographic space.</p></li>
+<li><p><strong>Routes:</strong> these are lines representing a path along the route network along the desire lines defined in the previous bullet point.</p></li>
+<li><p><strong>Nodes:</strong> these are points in the transport system that can represent common origins and destinations and public transport stations such as bus stops and rail stations.</p></li>
+<li><p><strong>Route networks:</strong> these represent the system of roads, paths and other linear features in an area. They can be represented as geographic features (representing route segments) or structured as an interconnected graph, with the level of traffic on different segments referred to as ‘flow’ by transport modelers.</p></li>
+</ul>
+<p>Transport systems are dynamic systems adding additional complexity. The purpose of geographic transport modeling can be interpreted as simplifying this complexity in a way that captures the essence of transport problems. Selecting an appropriate level of geographic analysis can help simplify this complexity, to capture the essence of a transport system without losing its most important features and variables</p>
+<p>Typically, models are designed to solve a particular problem. For this reason, this chapter is based around a policy scenario, introduced in the next section, that asks: how to increase cycling in the city of Bristol?</p>
+</div>
+<div id="bristol-as-a-case-study" class="section level1">
+<h1><span class="header-section-number">3</span> Bristol as a case study</h1>
+<p>In this exercise we will take Bristol as a case study. THe main reason is that all the data you need is included in the package spDataLarge. Bristol, a city in the west of England, around 30 km east of the Welsh capital Cardiff.</p>
+<p><img src="docs/Exercise_2/Bristol_Transport.png" width="150%" /></p>
+<p>In terms of transport, Bristol is well served by rail and road links, and has a relatively high level of active travel. 19% of its citizens cycle and 88% walk at least once per month</p>
+<p>8% of the population said they cycled to work in the 2011 census, compared with only 3% nationwide.</p>
+<p>Despite impressive walking and cycling statistics, the city has a major congestion problem. Part of the solution is to continue to increase the proportion of trips made by cycling.</p>
+<p>In this exercise we will see how GIS and R can be used to support sustainable transport planning. We will:</p>
+<ul>
+<li><strong>Describe</strong> the geographical pattern of transport behavior in the city</li>
+<li><strong>Identify</strong> key public transport nodes and routes along which cycling to rail stations could be encouraged, as the first stage in multi-model trips</li>
+<li><strong>Analyze</strong> travel ‘desire lines’, to find where many people drive short distances</li>
+<li><strong>Identify</strong> cycle route locations that will encourage less car driving and more cycling</li>
+</ul>
+</div>
+<div id="transport-zones" class="section level1">
+<h1><span class="header-section-number">4</span> Transport zones</h1>
+<p>The simplest way to define a study area is often the first matching boundary returned by OpenStreetMap, which can be obtained using <strong>osmdata</strong> with a command such as <code>bristol_region = osmdata::getbb("Bristol", format_out = "sf_polygon")</code>. This will return a detailed polygon of Bristil, representing the official boundary of the city (see the inner blue boundary in Figure 12.1) but there are a couple of issues with this approach:</p>
+<ul>
+<li>The first OSM boundary returned by OSM may not be the official boundary used by local authorities</li>
+<li>Even if OSM returns the official boundary, this may be inappropriate for transport research because they bear little relation to where people travel</li>
+</ul>
+<p><strong>Travel to Work Areas (TTWAs)</strong> address these issues by creating a zoning system analogous to hydrological watersheds. TTWAs were first defined as contiguous zones within which 75% of the population travels to work. Because Bristol is a major employer attracting travel from surrounding towns, its TTWA is substantially larger than the city bounds.</p>
+<p>The polygon representing this transport-orientated boundary is stored in the object <code>bristol_ttwa</code>, provided by the <code>spDataLarge</code> package loaded at the beginning of this exercise.</p>
+<p>The 102 zones used in this exercise are stored in <code>bristol_zones</code>:</p>
+<pre class="r"><code># Get the data
+bristol_zones &lt;- bristol_zones
+
+# Plot the data
+tm_shape(bristol_zones) +
+  tm_polygons()</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Note the zones get smaller in densely populated areas. This is because each zone host a similar number of persons.</p>
+<p>bristol_zones contains no attribute data on transport, however, only the name and code of each zone:</p>
+<pre class="r"><code>names(bristol_zones)</code></pre>
+<pre><code>## [1] &quot;geo_code&quot; &quot;name&quot;     &quot;geometry&quot;</code></pre>
+<p>To add travel data, we will undertake an attribute join. We will use travel data from the UK’s 2011 census question on travel to work, data stored in <code>bristol_od</code>, which was provided by the ons.gov.uk data portal. <code>bristol_od</code> is an origin-destination (OD) dataset on travel to work between zones from the UK’s 2011 Census.</p>
+<p>The first column is the ID of the zone of origin and the second column is the zone of destination. <code>bristol_od</code> has more rows than <code>bristol_zones</code>, representing travel between zones rather than the zones themselves:</p>
+<pre class="r"><code>nrow(bristol_od)</code></pre>
+<pre><code>## [1] 2910</code></pre>
+<pre class="r"><code>nrow(bristol_zones)</code></pre>
+<pre><code>## [1] 102</code></pre>
+<p>The results of the previous code chunk shows that there are more than 10 OD pairs for every zone, meaning we will need to aggregate the origin-destination data before it is joined with bristol_zones (Otherwise we will end up with a lot of duplicates!)</p>
+<pre class="r"><code>zones_attr &lt;- bristol_od %&gt;% 
+  # group the data by zone of origin
+  group_by(o) %&gt;%  
+  #aggregated the variables in the bristol_od dataset if they were numeric, to find the total number of people living in each zone by mode of transport
+  summarize_if(is.numeric, sum) %&gt;%
+  # renamed the grouping variable o so it matches the ID column geo_code in the bristol_zones object
+  dplyr::rename(geo_code = o) 
+
+# We vizualise the result
+head(zones_attr)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   geo_code    all bicycle  foot car_driver train
+##   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 E02002985   868      30   173        414    43
+## 2 E02002987   898      34   117        523    58
+## 3 E02003005   786      19    91        593     8
+## 4 E02003012  3312     161   330       2058    12
+## 5 E02003013  3715     188   615       2021     6
+## 6 E02003014  2220     126   270       1239     5</code></pre>
+<p><code>zones_attr</code> can now be joined to <code>bristol_zones</code>. This is done using the <code>left_join</code> function.</p>
+<pre class="r"><code>zones_joined &lt;- left_join(bristol_zones, zones_attr, by = &quot;geo_code&quot;)
+
+# Check which columns we have in zones_joined
+names(zones_joined)</code></pre>
+<pre><code>## [1] &quot;geo_code&quot;   &quot;name&quot;       &quot;all&quot;        &quot;bicycle&quot;    &quot;foot&quot;      
+## [6] &quot;car_driver&quot; &quot;train&quot;      &quot;geometry&quot;</code></pre>
+<p>The result is <code>zones_joined</code>, which contains new columns representing the total number of trips originating in each zone in the study area (almost 1/4 of a million) and their mode of travel (by bicycle, foot, car and train).</p>
+<p>We can illustrate the geographic distribution of trips origin:</p>
+<pre class="r"><code>tm_shape(zones_joined) +
+  tm_polygons(col = &quot;all&quot;)</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>And we can do the same to vizualise the zones of destinations:</p>
+<pre class="r"><code>zones_od = bristol_od %&gt;% 
+  group_by(d) %&gt;% 
+  summarize_if(is.numeric, sum) %&gt;% 
+  dplyr::select(geo_code = d, all_dest = all) %&gt;% 
+  inner_join(zones_joined, ., by = &quot;geo_code&quot;)
+
+# Make the map of zones of destination
+tm_shape(zones_od) +
+  tm_polygons(col = &#39;all_dest&#39;)</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>The map shows that the most common destination zones concentrated in Bristol city center, where indeed most people work.</p>
+</div>
+<div id="desire-lines" class="section level1">
+<h1><span class="header-section-number">5</span> Desire lines</h1>
+<p>Unlike zones, which represent trip origins and destinations, desire lines connect the centroid of the origin and the destination zone, and thereby represent where people desire to go between zones. They represent the quickest ‘bee line’ or ‘crow flies’ route between A and B that would be taken, if it were not for obstacles such as buildings and windy roads getting in the way.</p>
+<p>We have already loaded data representing desire lines in the dataset bristol_od. This origin-destination (OD) data frame object represents the number of people traveling between the zone represented in o and d, as illustrated below:</p>
+<pre class="r"><code>od_top5 = bristol_od %&gt;% 
+  arrange(desc(all)) %&gt;% 
+  top_n(5, wt = all) # We take the 5 first rows
+
+od_top5</code></pre>
+<pre><code>## # A tibble: 5 x 7
+##   o         d           all bicycle  foot car_driver train
+##   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 E02003043 E02003043  1493      66  1296         64     8
+## 2 E02003047 E02003043  1300     287   751        148     8
+## 3 E02003031 E02003043  1221     305   600        176     7
+## 4 E02003037 E02003043  1186      88   908        110     3
+## 5 E02003034 E02003043  1177     281   711        100     7</code></pre>
+<p>The resulting table provides a snapshot of Bristolian travel patterns in terms of commuting (travel to work). It demonstrates that walking is the most popular mode of transport among the top 5 origin-destination pairs, that zone E02003043 is a popular destination (Bristol city center, the destination of all the top 5 OD pairs), and that the intrazonal trips, from one part of zone E02003043 to another (first row of the table), constitute the most traveled OD pair in the dataset.</p>
+<p>However, the data as presented like this is not very useful from a policy perspective. We would like to know the percentage of each desire line that is made by these two active modes</p>
+<pre class="r"><code>bristol_od$Active = (bristol_od$bicycle + bristol_od$foot) /
+  bristol_od$all * 100</code></pre>
+<p>There are two main types of OD pair: interzonal and intrazonal.</p>
+<ul>
+<li>Interzonal OD pairs represent travel between zones in which the destination is different from the origin.</li>
+<li>Intrazonal OD pairs represent travel within the same zone (see the top row of previous table). The following code chunk splits od_bristol into these two types:</li>
+</ul>
+<pre class="r"><code>od_intra = filter(bristol_od, o == d)
+od_inter = filter(bristol_od, o != d)</code></pre>
+<p>The next step is to convert the interzonal OD pairs into an <code>sf</code> object representing desire lines that can be plotted on a map with the stplanr function <code>od2line()</code>.</p>
+<pre class="r"><code>desire_lines = od2line(od_inter, zones_od)</code></pre>
+<pre><code>## Creating centroids representing desire line start and end points.</code></pre>
+<p>We can then vizualize the desire lines. We use <code>qtm</code> function from the <code>tmap</code> package, <code>qtm</code> basically builds a “quick tmap”:</p>
+<pre class="r"><code>qtm(desire_lines, lines.lwd = &quot;all&quot;)</code></pre>
+<pre><code>## Legend labels were too wide. Therefore, legend.text.size has been set to 0.61. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>And with some more fancy coding:</p>
+<pre class="r"><code>desire_lines_top5 = od2line(od_top5, zones_od)</code></pre>
+<pre><code>## Creating centroids representing desire line start and end points.</code></pre>
+<pre class="r"><code># tmaptools::palette_explorer()
+tm_shape(desire_lines) +
+  tm_lines(palette = &quot;plasma&quot;, breaks = c(0, 5, 10, 20, 40, 100),
+    lwd = &quot;all&quot;,
+    scale = 9,
+    title.lwd = &quot;Number of trips&quot;,
+    alpha = 0.6,
+    col = &quot;Active&quot;,
+    title = &quot;Active travel (%)&quot;
+  ) +
+  tm_shape(desire_lines_top5) +
+  tm_lines(lwd = 5, col = &quot;black&quot;, alpha = 0.7) +
+  tm_scale_bar()</code></pre>
+<pre><code>## Warning: The shape desire_lines_top5 is invalid. See sf::st_is_valid</code></pre>
+<pre><code>## Legend labels were too wide. Therefore, legend.text.size has been set to 0.61. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>The map shows that the city center dominates transport patterns in the region, suggesting sustainable transport policies should be prioritized there, although a number of peripheral sub-centers can also be seen. Next it would be interesting to have a look at the distribution of interzonal modes, e.g. between which zones is cycling the least or the most common means of transport.</p>
+</div>
+<div id="routes" class="section level1">
+<h1><span class="header-section-number">6</span> Routes</h1>
+<p>From a geographer’s perspective, routes are desire lines that are no longer straight: the origin and destination points are the same, but the pathway to get from A to B is more complex. Desire lines contain only two vertices (their beginning and end points) but routes can contain hundreds of vertices if they cover a large distance or represent travel patterns on an intricate road network (routes on simple grid-based road networks require relatively few vertices). Routes are generated from desire lines — or more commonly origin-destination pairs — using routing services which either run locally or remotely.</p>
+<p>Instead of routing all desire lines generated in the previous section, which would be time and memory-consuming, we will focus on the desire lines of policy interest. The benefits of cycling trips are greatest when they replace car trips. Clearly, not all car trips can realistically be replaced by cycling. However, 5 km Euclidean distance (or around 6-8 km of route distance) can realistically be cycled by many people, especially if they are riding an electric bicycle (‘ebike’). We will therefore only route desire lines along which a high (300+) number of car trips take place that are up to 5 km in distance. The routing will be done using the function <code>line2route()</code> from the <code>stplanr</code> package.</p>
+<pre class="r"><code># Calculate the distance
+desire_lines$distance = as.numeric(st_length(desire_lines))
+
+# Filter the observations with trajects involving high numbers of cars and that are only 5 or less km
+desire_carshort = dplyr::filter(desire_lines, car_driver &gt; 300 &amp; distance &lt; 5000)</code></pre>
+<p>At this point we would need to route the desired lines. We would have to use the function <code>line2route</code> like this:</p>
+<pre class="r"><code>route_carshort = line2route(desire_carshort, route_fun = route_osrm)</code></pre>
+<p>Feel free to download the data and try it!</p>
+<p>However this step is complicated as we need to connect to the API of (openrouteservice)[<a href="https://maps.openrouteservice.org/" class="uri">https://maps.openrouteservice.org/</a>].</p>
+<p>We will use the pre-made routes included in the <code>SpDataLarge</code> package.</p>
+<pre class="r"><code># Load the data from the package
+route_carshort &lt;- route_carshort</code></pre>
+<p>The new route dataset contains distance (referring to route distance this time) and duration fields (in seconds) which could be useful. However, for the purposes of this section, we are only interested in the <strong>route geometry</strong>, from which route distance can be calculated.</p>
+<pre class="r"><code># Extract the route geometry and add the column of new polygons
+desire_carshort$geom_car = st_geometry(route_carshort)
+
+# Tell R that we want the spatial object to have the new column as its &quot;default geometry&quot;
+desire_carshort &lt;- st_set_geometry(desire_carshort, desire_carshort$geom_car)</code></pre>
+<pre class="r"><code># We set tmap into an interactive mode
+tmap_mode(&#39;view&#39;)</code></pre>
+<pre><code>## tmap mode set to interactive viewing</code></pre>
+<pre class="r"><code>tm_shape(desire_carshort) +
+  tm_lines(palette = &quot;plasma&quot;,
+           scale = 9,
+           title.lwd = &quot;Number of trips&quot;,
+           alpha = 0.6,
+           col = &quot;car_driver&quot;,
+  ) +
+  tm_lines(lwd = 5, col = &quot;black&quot;, alpha = 0.7) </code></pre>
+<pre><code>## Warning: One tm layer group has duplicated layer types, which are omitted. To
+## draw multiple layers of the same type, use multiple layer groups (i.e. specify
+## tm_shape prior to each of them).</code></pre>
+<div id="htmlwidget-d17576b241a7f8a2ab12" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d17576b241a7f8a2ab12">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,"Esri.WorldGrayCanvas",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["Esri.WorldTopoMap",null,"Esri.WorldTopoMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addPolylines","args":[[[[{"lng":[-2.54743,-2.54741,-2.54705,-2.54672,-2.54652,-2.54627,-2.54616,-2.54606,-2.54599,-2.54595,-2.54595,-2.54599,-2.54605,-2.54615,-2.54626,-2.54637,-2.54654,-2.54665,-2.54667,-2.54667,-2.54664,-2.54669,-2.54681,-2.54687,-2.54712,-2.54722,-2.54757,-2.54782,-2.54805,-2.54841,-2.54865,-2.54895,-2.54908,-2.54951,-2.54987,-2.54993,-2.55032,-2.55094,-2.55154,-2.55198,-2.55371,-2.55462,-2.55532,-2.55689,-2.55804,-2.5581,-2.55828,-2.55853,-2.5587,-2.55891,-2.55906,-2.55916,-2.55922,-2.55921,-2.55958,-2.55969,-2.56076,-2.56132,-2.56148,-2.56169,-2.56211,-2.56278,-2.56375,-2.56405,-2.5642,-2.56445,-2.56478,-2.56615,-2.56642,-2.5667,-2.56679,-2.56687,-2.56686,-2.56682,-2.56679,-2.56676,-2.56664,-2.56662,-2.56641,-2.5664,-2.56638,-2.56638,-2.56639,-2.56641,-2.56643,-2.56647,-2.56652,-2.56654,-2.5666,-2.56665,-2.56674,-2.56678,-2.56688,-2.56701,-2.56708,-2.56712,-2.5672,-2.56729,-2.5673,-2.56727,-2.56722,-2.56716,-2.56707,-2.56701,-2.56699,-2.56697,-2.56691,-2.56687,-2.56687,-2.56682,-2.56676,-2.56669,-2.56667,-2.56667,-2.56671,-2.56679,-2.56687,-2.56699,-2.56713,-2.56742,-2.5676,-2.5677,-2.56792,-2.56801,-2.5681,-2.56825,-2.56832,-2.56839,-2.56846,-2.56853,-2.56859,-2.56864,-2.5687,-2.56926,-2.56934,-2.56948,-2.56964,-2.56966,-2.56967,-2.56973,-2.56983,-2.56998,-2.57004,-2.57017,-2.57023,-2.57036,-2.57043,-2.57043,-2.57038,-2.57029,-2.57046,-2.57051,-2.57055,-2.57102,-2.57104,-2.5715,-2.57167,-2.57188,-2.57196,-2.57207,-2.57238,-2.57594,-2.57616,-2.57628,-2.57631,-2.57637,-2.57678],"lat":[51.53681,51.53678,51.53609,51.53549,51.53518,51.53499,51.53497,51.53493,51.53488,51.53481,51.53474,51.53467,51.53461,51.53457,51.53454,51.53454,51.53459,51.53468,51.53474,51.5348,51.53486,51.53516,51.53539,51.53549,51.53596,51.53614,51.53672,51.5371,51.5374,51.53778,51.538,51.53824,51.53835,51.53861,51.53881,51.53883,51.53902,51.53926,51.53946,51.53961,51.54021,51.54053,51.54079,51.54139,51.54182,51.54183,51.54187,51.5419,51.54187,51.54188,51.54193,51.54202,51.54213,51.54214,51.5423,51.54236,51.54268,51.54284,51.54287,51.54292,51.543,51.54311,51.54318,51.5432,51.54321,51.54316,51.54317,51.54323,51.54321,51.5431,51.54304,51.5428,51.54272,51.54256,51.54242,51.54227,51.54183,51.54174,51.5406,51.54042,51.54009,51.53987,51.5397,51.53923,51.53896,51.53871,51.53836,51.53824,51.53796,51.53778,51.53738,51.53725,51.53684,51.53645,51.53606,51.53576,51.53532,51.53505,51.53487,51.5348,51.53475,51.53473,51.53472,51.53471,51.53474,51.53475,51.53475,51.53473,51.5347,51.53465,51.53456,51.53443,51.53434,51.53427,51.53418,51.53406,51.53402,51.53396,51.53392,51.53389,51.53389,51.53389,51.5339,51.53389,51.53388,51.53385,51.53379,51.53374,51.53365,51.53354,51.53339,51.53332,51.53324,51.53284,51.53279,51.53267,51.53245,51.53239,51.53236,51.5323,51.53225,51.53221,51.53221,51.53222,51.53224,51.53231,51.53243,51.53252,51.53259,51.53265,51.53277,51.53281,51.53284,51.53317,51.53319,51.53353,51.53365,51.53379,51.53383,51.53379,51.5337,51.5327,51.53301,51.53316,51.53318,51.5332,51.53331]}]],[[{"lng":[-2.54743,-2.54741,-2.54705,-2.54672,-2.54652,-2.54627,-2.54616,-2.54606,-2.54599,-2.54595,-2.54595,-2.54599,-2.54605,-2.54615,-2.54608,-2.54596,-2.5459,-2.54552,-2.54516,-2.54497,-2.54481,-2.54427,-2.54359,-2.54305,-2.54237,-2.5414,-2.54017,-2.53914,-2.53835,-2.5382,-2.53802,-2.53786,-2.53775,-2.53772,-2.53781,-2.53428,-2.534,-2.53398,-2.53391,-2.53374,-2.53363,-2.5335,-2.53347,-2.53337,-2.53332,-2.5333,-2.53336,-2.5332,-2.53257,-2.53176,-2.53136,-2.53107,-2.53092,-2.53082,-2.53087,-2.53115,-2.5311,-2.53097,-2.5309,-2.53082,-2.53078,-2.53078,-2.53083,-2.5309,-2.53098,-2.53106,-2.53106,-2.53089,-2.53067,-2.53036,-2.53025,-2.53012,-2.53001,-2.52993,-2.5299,-2.5299,-2.52985,-2.52983,-2.52969,-2.52941,-2.52914,-2.52883,-2.52866,-2.52845,-2.52838,-2.52838,-2.5284,-2.52845,-2.52858,-2.52867,-2.52878,-2.52897,-2.5291,-2.5293,-2.52947,-2.52964,-2.5297,-2.52978,-2.53,-2.53024,-2.53045,-2.53059,-2.53076,-2.53093,-2.53119,-2.53165,-2.5322,-2.53234,-2.53377,-2.53452,-2.5349,-2.53522,-2.53536,-2.5356,-2.53618,-2.53671,-2.5369,-2.53701,-2.53742,-2.53759,-2.53775,-2.53793,-2.538,-2.53792,-2.53787,-2.53781,-2.53775,-2.53771,-2.53764,-2.53755,-2.53742,-2.53686,-2.53638,-2.5359],"lat":[51.53681,51.53678,51.53609,51.53549,51.53518,51.53499,51.53497,51.53493,51.53488,51.53481,51.53474,51.53467,51.53461,51.53457,51.53444,51.53421,51.53409,51.53344,51.53285,51.53258,51.53238,51.53185,51.53133,51.53097,51.53049,51.5298,51.529,51.52836,51.5279,51.52798,51.52799,51.52795,51.52787,51.52774,51.52763,51.5256,51.52548,51.5255,51.52555,51.5256,51.5256,51.52558,51.52557,51.5255,51.52544,51.52534,51.52524,51.52517,51.52482,51.52434,51.52408,51.52376,51.52349,51.5231,51.5228,51.52202,51.52186,51.52166,51.52163,51.52156,51.52149,51.5214,51.52133,51.52128,51.52124,51.52109,51.52101,51.51999,51.51888,51.51763,51.51747,51.51736,51.51731,51.51724,51.51718,51.51712,51.51696,51.51692,51.51675,51.51646,51.51617,51.51573,51.51539,51.5149,51.51444,51.51417,51.51407,51.51374,51.51334,51.51313,51.51293,51.5126,51.51242,51.51219,51.51202,51.51188,51.51185,51.51179,51.51166,51.51152,51.51142,51.51137,51.51131,51.51125,51.51117,51.51105,51.51092,51.51089,51.51059,51.51041,51.51028,51.51015,51.51007,51.50992,51.50945,51.50899,51.50876,51.50864,51.50813,51.50783,51.50757,51.50723,51.50701,51.50681,51.50664,51.5065,51.5064,51.50635,51.50628,51.50623,51.50621,51.50627,51.50631,51.50634]}]],[[{"lng":[-2.57678,-2.57637,-2.57631,-2.57628,-2.57616,-2.57594,-2.57238,-2.57207,-2.57196,-2.57188,-2.57167,-2.5715,-2.57104,-2.57102,-2.57055,-2.57051,-2.57046,-2.57029,-2.57017,-2.57005,-2.56998,-2.5699,-2.56973,-2.56951,-2.56946,-2.56934,-2.56926,-2.5687,-2.56865,-2.56863,-2.56863,-2.56863,-2.56861,-2.56859,-2.56851,-2.56848,-2.56811,-2.56805,-2.56794,-2.56764,-2.56741,-2.56725,-2.56717,-2.56711,-2.56708,-2.56695,-2.56675,-2.5666,-2.56655,-2.56653,-2.56653,-2.56652,-2.56656,-2.56672,-2.56684,-2.5669,-2.56695,-2.56699,-2.56704,-2.56715,-2.5673,-2.56757,-2.56766,-2.56777,-2.56779,-2.56778,-2.56775,-2.56772,-2.56769,-2.56763,-2.56753,-2.5675,-2.56749,-2.56751,-2.56766,-2.56782,-2.56782,-2.56788,-2.56795,-2.56807,-2.56817,-2.56826,-2.56833,-2.5686,-2.56883,-2.56919,-2.57342,-2.57528,-2.5828,-2.58366,-2.58439,-2.58521,-2.58561,-2.58608,-2.58652,-2.58704,-2.58753,-2.58794,-2.58829,-2.58859,-2.58921,-2.58976,-2.59048,-2.59112,-2.59189,-2.59275,-2.59389,-2.59465,-2.59535,-2.59617,-2.59634,-2.59681,-2.59774,-2.59875,-2.60093,-2.60218,-2.60328,-2.60453,-2.60599,-2.60734,-2.60813,-2.60883,-2.60908,-2.60924,-2.6094,-2.60951,-2.60963,-2.60975,-2.60985,-2.60996,-2.61011,-2.61025,-2.61038,-2.61045,-2.61051,-2.61055,-2.6106,-2.61075,-2.61072,-2.61067,-2.61053,-2.61042,-2.61031,-2.60984,-2.60956,-2.60949,-2.60903,-2.6087,-2.60852,-2.60844,-2.60849,-2.60845,-2.60848,-2.6085,-2.60856,-2.60877,-2.60921,-2.61106,-2.61117,-2.61207,-2.61333,-2.61361,-2.61411,-2.61434,-2.61457,-2.61472,-2.61546,-2.61617,-2.61654,-2.61745,-2.61765,-2.61788,-2.61807,-2.61819,-2.61836,-2.61853,-2.61872,-2.61906,-2.61974,-2.62092,-2.62166,-2.62271,-2.62321,-2.62342,-2.62365,-2.62412,-2.62416,-2.62508,-2.62535,-2.6263,-2.62749,-2.62803,-2.62812,-2.62836,-2.62848,-2.62851,-2.62847,-2.6284,-2.62629,-2.62622,-2.62585,-2.62549,-2.62505,-2.6245,-2.62052,-2.62047,-2.62037,-2.61962,-2.61953,-2.61888,-2.6178,-2.61709],"lat":[51.53331,51.5332,51.53318,51.53316,51.53301,51.5327,51.5337,51.53379,51.53383,51.53379,51.53365,51.53353,51.53319,51.53317,51.53284,51.53281,51.53277,51.53265,51.53269,51.53271,51.5327,51.53269,51.5327,51.53274,51.53275,51.53279,51.53284,51.53324,51.53339,51.53349,51.53361,51.53365,51.53379,51.53383,51.53406,51.53411,51.53462,51.53471,51.53487,51.53541,51.53586,51.53616,51.53641,51.53662,51.53669,51.53714,51.53791,51.53871,51.53929,51.53963,51.53977,51.54009,51.54063,51.54158,51.54206,51.54228,51.54243,51.54252,51.54262,51.54273,51.54283,51.54302,51.54307,51.5432,51.54331,51.54341,51.54348,51.5435,51.54354,51.54358,51.54377,51.54385,51.54391,51.5441,51.54464,51.54622,51.54629,51.54642,51.54649,51.54656,51.54661,51.54665,51.54666,51.54665,51.5466,51.54649,51.54525,51.54459,51.54193,51.54159,51.54126,51.54081,51.54056,51.54024,51.5399,51.53944,51.53895,51.53847,51.538,51.53763,51.53692,51.53638,51.5357,51.53518,51.5346,51.534,51.53329,51.53287,51.53252,51.53212,51.532,51.53176,51.53138,51.53101,51.53033,51.53,51.52972,51.52942,51.52913,51.52884,51.52867,51.52855,51.52846,51.52837,51.52825,51.52814,51.52806,51.52799,51.52797,51.52794,51.52795,51.52798,51.52803,51.52806,51.5281,51.52815,51.52825,51.52881,51.52892,51.529,51.52916,51.52926,51.52936,51.52985,51.53023,51.53032,51.53092,51.53126,51.53143,51.53173,51.53205,51.53254,51.53291,51.53309,51.53328,51.53359,51.53395,51.53497,51.53502,51.53538,51.53604,51.53621,51.53652,51.53668,51.53685,51.53696,51.53741,51.53785,51.53814,51.53883,51.53897,51.53914,51.53928,51.53937,51.5395,51.53962,51.53974,51.53993,51.54022,51.54084,51.54121,51.54173,51.542,51.54214,51.54234,51.5428,51.54284,51.5439,51.54421,51.54531,51.54669,51.54724,51.54733,51.54761,51.54779,51.54789,51.54798,51.54809,51.55096,51.55107,51.55172,51.55241,51.55314,51.55295,51.55158,51.55158,51.55152,51.55127,51.55124,51.55102,51.55055,51.55029]}]],[[{"lng":[-2.55118,-2.55097,-2.55123,-2.55128,-2.55136,-2.5516,-2.55201,-2.55188,-2.55151,-2.55117,-2.5511,-2.55068,-2.54964,-2.5493,-2.54893,-2.54858,-2.54833,-2.54816,-2.54812,-2.5481,-2.54817,-2.54825,-2.54829,-2.54832,-2.54833,-2.54836,-2.54837,-2.54837,-2.54848,-2.54847,-2.54848,-2.54851,-2.54855,-2.54859,-2.54862,-2.54871,-2.54876,-2.54886,-2.54973,-2.55021,-2.55037,-2.55077,-2.55119,-2.55146,-2.55189,-2.55242,-2.55294,-2.55312,-2.55329,-2.55347,-2.55362,-2.55374,-2.55388,-2.55437,-2.55453,-2.55458,-2.55492,-2.55597,-2.55625,-2.55654,-2.55694,-2.55704,-2.55718,-2.55727,-2.55747,-2.5577,-2.55784,-2.55799,-2.55817,-2.55835,-2.55869,-2.55889,-2.55921,-2.55952,-2.56116,-2.5612,-2.56134,-2.56143,-2.56156,-2.56163,-2.56172,-2.56181,-2.56213,-2.56239,-2.56254,-2.56259,-2.56261,-2.56264,-2.56267,-2.5627,-2.56273,-2.56282,-2.56293,-2.56312,-2.56335,-2.56352,-2.56363,-2.56376,-2.56448,-2.56468,-2.56488,-2.56501,-2.56512,-2.56603,-2.56637,-2.56658,-2.56675,-2.5669,-2.56698,-2.56706,-2.56709,-2.56709,-2.56696,-2.56691,-2.56687,-2.56687,-2.56682,-2.56676,-2.56669,-2.56667,-2.56667,-2.56671,-2.56679,-2.56687,-2.56699,-2.56713,-2.56742,-2.5676,-2.5677,-2.56792,-2.56801,-2.5681,-2.56825,-2.56832,-2.56839,-2.56846,-2.56853,-2.56859,-2.56864,-2.5687,-2.56926,-2.56934,-2.56948,-2.56964,-2.56966,-2.56967,-2.56973,-2.56983,-2.56998,-2.57004,-2.57017,-2.57023,-2.57036,-2.57043,-2.57043,-2.57038,-2.57029,-2.57046,-2.57051,-2.57055,-2.57102,-2.57104,-2.5715,-2.57167,-2.57188,-2.57196,-2.57207,-2.57238,-2.57594,-2.57616,-2.57628,-2.57631,-2.57637,-2.57678],"lat":[51.53295,51.53286,51.53262,51.53259,51.53257,51.53254,51.53244,51.53226,51.53194,51.53173,51.53169,51.53149,51.5311,51.53092,51.53069,51.53037,51.53003,51.52959,51.5294,51.52921,51.52879,51.52857,51.52849,51.52841,51.52837,51.52831,51.52828,51.52824,51.52814,51.52812,51.5281,51.52808,51.52807,51.52808,51.5281,51.52812,51.52815,51.52823,51.52863,51.52884,51.5289,51.529,51.52906,51.52908,51.52906,51.529,51.52897,51.52896,51.52898,51.52902,51.52907,51.52913,51.52922,51.52962,51.52973,51.52978,51.53012,51.53129,51.53158,51.53191,51.53236,51.53244,51.53251,51.53255,51.5326,51.53261,51.5326,51.53258,51.53256,51.53253,51.53248,51.53245,51.5324,51.53235,51.53207,51.53212,51.53232,51.53247,51.53267,51.53276,51.53289,51.53303,51.53353,51.53393,51.53419,51.53434,51.53449,51.53473,51.53483,51.5349,51.53495,51.53512,51.53526,51.53544,51.53559,51.53562,51.53562,51.53559,51.53536,51.5353,51.53528,51.53527,51.53528,51.53542,51.53547,51.53549,51.53547,51.53543,51.53536,51.53528,51.5352,51.53511,51.53484,51.53475,51.53473,51.5347,51.53465,51.53456,51.53443,51.53434,51.53427,51.53418,51.53406,51.53402,51.53396,51.53392,51.53389,51.53389,51.53389,51.5339,51.53389,51.53388,51.53385,51.53379,51.53374,51.53365,51.53354,51.53339,51.53332,51.53324,51.53284,51.53279,51.53267,51.53245,51.53239,51.53236,51.5323,51.53225,51.53221,51.53221,51.53222,51.53224,51.53231,51.53243,51.53252,51.53259,51.53265,51.53277,51.53281,51.53284,51.53317,51.53319,51.53353,51.53365,51.53379,51.53383,51.53379,51.5337,51.5327,51.53301,51.53316,51.53318,51.5332,51.53331]}]],[[{"lng":[-2.55118,-2.55097,-2.55123,-2.55128,-2.55136,-2.5516,-2.55201,-2.55188,-2.55151,-2.55117,-2.5511,-2.55068,-2.54964,-2.5493,-2.54893,-2.54858,-2.54833,-2.54816,-2.54812,-2.5481,-2.54817,-2.54825,-2.54829,-2.54832,-2.54833,-2.54836,-2.54837,-2.54837,-2.54848,-2.54847,-2.54848,-2.5485,-2.54851,-2.54855,-2.5486,-2.54865,-2.54877,-2.54882,-2.54883,-2.5488,-2.54874,-2.54859,-2.54855,-2.54828,-2.54806,-2.548,-2.54794,-2.5479,-2.54788,-2.54788,-2.54791,-2.54795,-2.54811,-2.54825,-2.54851,-2.54856,-2.54863,-2.54863,-2.54918,-2.54967,-2.55006,-2.55059,-2.55077,-2.55094,-2.55099,-2.55089,-2.55084,-2.55076,-2.55073,-2.55071,-2.55071,-2.55073,-2.55079,-2.55083,-2.55093,-2.55082,-2.55065,-2.55056,-2.55051,-2.55046,-2.5504,-2.5503,-2.55026,-2.54995,-2.5498,-2.54941,-2.54888,-2.54677,-2.54641,-2.54581,-2.54495,-2.54448,-2.54344,-2.54309,-2.54287,-2.54238,-2.54176,-2.54135,-2.54084,-2.5405,-2.54012,-2.53907,-2.53835,-2.53769,-2.53626,-2.53554,-2.53499,-2.53429,-2.53363,-2.53262,-2.53226,-2.53212,-2.53199,-2.53184,-2.5318,-2.53169,-2.5315,-2.53146,-2.5314,-2.5313,-2.53119,-2.53108,-2.53097,-2.5309,-2.53082,-2.53078,-2.53078,-2.53083,-2.5309,-2.53098,-2.53106,-2.53106,-2.53089,-2.53067,-2.53036,-2.53025,-2.53012,-2.53001,-2.52993,-2.5299,-2.5299,-2.52985,-2.52983,-2.52969,-2.52941,-2.52914,-2.52883,-2.52866,-2.52845,-2.52838,-2.52838,-2.5284,-2.52845,-2.52858,-2.52867,-2.52878,-2.52897,-2.5291,-2.5293,-2.52947,-2.52964,-2.5297,-2.52978,-2.53,-2.53024,-2.53045,-2.53059,-2.53076,-2.53093,-2.53119,-2.53165,-2.5322,-2.53234,-2.53377,-2.53452,-2.5349,-2.53522,-2.53536,-2.5356,-2.53618,-2.53671,-2.5369,-2.53701,-2.53742,-2.53759,-2.53775,-2.53793,-2.538,-2.53792,-2.53787,-2.53781,-2.53775,-2.53771,-2.53764,-2.53755,-2.53742,-2.53686,-2.53638,-2.5359],"lat":[51.53295,51.53286,51.53262,51.53259,51.53257,51.53254,51.53244,51.53226,51.53194,51.53173,51.53169,51.53149,51.5311,51.53092,51.53069,51.53037,51.53003,51.52959,51.5294,51.52921,51.52879,51.52857,51.52849,51.52841,51.52837,51.52831,51.52828,51.52824,51.52814,51.52812,51.5281,51.52801,51.52796,51.52792,51.52782,51.52773,51.5275,51.52736,51.52722,51.5271,51.52698,51.52668,51.52661,51.52612,51.52599,51.52599,51.52597,51.52594,51.52591,51.52587,51.52584,51.52581,51.52572,51.52563,51.52547,51.52544,51.5254,51.52539,51.52501,51.52468,51.52441,51.52409,51.52395,51.52377,51.52361,51.5236,51.52358,51.52353,51.52349,51.52346,51.5234,51.52334,51.52329,51.52327,51.52323,51.52309,51.52274,51.52243,51.52236,51.52227,51.52219,51.52208,51.52205,51.52198,51.52197,51.52199,51.52205,51.52242,51.5225,51.52265,51.52286,51.52294,51.52307,51.5231,51.52312,51.52314,51.52314,51.52312,51.52309,51.52305,51.52302,51.52282,51.52264,51.52247,51.52209,51.52191,51.52179,51.52167,51.52159,51.52152,51.52149,51.52149,51.52149,51.52149,51.5215,51.52152,51.52157,51.52161,51.52164,51.52168,51.52169,51.52169,51.52166,51.52163,51.52156,51.52149,51.5214,51.52133,51.52128,51.52124,51.52109,51.52101,51.51999,51.51888,51.51763,51.51747,51.51736,51.51731,51.51724,51.51718,51.51712,51.51696,51.51692,51.51675,51.51646,51.51617,51.51573,51.51539,51.5149,51.51444,51.51417,51.51407,51.51374,51.51334,51.51313,51.51293,51.5126,51.51242,51.51219,51.51202,51.51188,51.51185,51.51179,51.51166,51.51152,51.51142,51.51137,51.51131,51.51125,51.51117,51.51105,51.51092,51.51089,51.51059,51.51041,51.51028,51.51015,51.51007,51.50992,51.50945,51.50899,51.50876,51.50864,51.50813,51.50783,51.50757,51.50723,51.50701,51.50681,51.50664,51.5065,51.5064,51.50635,51.50628,51.50623,51.50621,51.50627,51.50631,51.50634]}]],[[{"lng":[-2.47957,-2.47968,-2.47968,-2.47965,-2.47979,-2.48017,-2.48057,-2.48074,-2.48093,-2.48118,-2.48136,-2.48157,-2.48174,-2.48202,-2.48224,-2.48239,-2.48253,-2.48271,-2.48284,-2.48304,-2.48313,-2.48324,-2.48329,-2.4834,-2.48347,-2.48351,-2.48351,-2.48348,-2.48343,-2.48337,-2.48329,-2.48301,-2.48276,-2.48255,-2.48237,-2.48222,-2.48215,-2.482,-2.48143,-2.48105,-2.48086,-2.48082,-2.48082,-2.48085,-2.4809,-2.48092,-2.48092,-2.48093,-2.48098,-2.48101,-2.48112,-2.48279,-2.48397,-2.48551,-2.48593,-2.48646,-2.4869,-2.48731,-2.48774,-2.48824,-2.48901,-2.48914,-2.48928,-2.48946,-2.48964,-2.48996,-2.49004,-2.49017,-2.49033,-2.49039,-2.49049,-2.4906,-2.49063,-2.49082,-2.49098,-2.49114,-2.49137,-2.492,-2.49366,-2.49786,-2.49989,-2.502,-2.50405,-2.50463,-2.5051,-2.5063,-2.50707,-2.50796,-2.50912,-2.50929,-2.50941,-2.50948,-2.50956,-2.50957,-2.50962,-2.50972,-2.50986,-2.50996,-2.51012,-2.51028,-2.51037,-2.51043,-2.51047,-2.51078,-2.51102,-2.51121,-2.51143,-2.5119,-2.51219,-2.51251,-2.51283,-2.51309,-2.51334,-2.51363,-2.51397,-2.51609,-2.5179,-2.51917,-2.51985,-2.5206,-2.52074,-2.52093,-2.52106,-2.52112,-2.52174,-2.5237,-2.52557,-2.5258,-2.526,-2.5262,-2.5266,-2.52674,-2.52683,-2.52715,-2.52737,-2.52757,-2.52795,-2.52821,-2.52836,-2.52858,-2.52861,-2.52877,-2.52889,-2.52904,-2.52921,-2.52953,-2.5307,-2.5315,-2.53228,-2.53328,-2.53422,-2.53468,-2.53519,-2.53579,-2.53625,-2.53687,-2.53762,-2.53776,-2.53786,-2.53793,-2.53809,-2.53811,-2.53816,-2.53822,-2.53823,-2.53824,-2.53823,-2.53821,-2.53812,-2.53795,-2.53775,-2.53765,-2.53757,-2.53742,-2.53759,-2.53775,-2.53793,-2.538,-2.53792,-2.53787,-2.53781,-2.53775,-2.53771,-2.53764,-2.53755,-2.53742,-2.53686,-2.53638,-2.5359],"lat":[51.49476,51.49493,51.49507,51.49513,51.4952,51.49547,51.49573,51.49585,51.49592,51.49599,51.49602,51.49602,51.49604,51.49609,51.49616,51.49623,51.49631,51.49644,51.49654,51.49665,51.49669,51.49671,51.4967,51.49673,51.49677,51.49683,51.49688,51.49693,51.49696,51.49699,51.497,51.49705,51.49712,51.49719,51.49729,51.49737,51.49743,51.49756,51.49809,51.49855,51.49875,51.4988,51.49902,51.49908,51.49923,51.4993,51.49937,51.49945,51.49954,51.49958,51.49967,51.5011,51.5021,51.50339,51.50369,51.50403,51.50428,51.50449,51.5047,51.5049,51.50517,51.50522,51.50524,51.50525,51.50524,51.50516,51.50511,51.50508,51.50507,51.50507,51.50509,51.50513,51.50516,51.50521,51.50524,51.50525,51.50525,51.50517,51.50496,51.50442,51.50415,51.50388,51.50361,51.50351,51.50342,51.50315,51.50293,51.50264,51.50218,51.50209,51.502,51.50192,51.50178,51.50172,51.50163,51.50155,51.5015,51.50148,51.50148,51.50152,51.50157,51.5016,51.50163,51.50177,51.5019,51.502,51.5021,51.50232,51.50244,51.50254,51.50263,51.50269,51.50275,51.50279,51.50285,51.5032,51.50351,51.50372,51.50384,51.50396,51.50398,51.50402,51.50403,51.50404,51.50414,51.50445,51.50475,51.50478,51.50478,51.50477,51.5047,51.50467,51.50464,51.5046,51.5046,51.50462,51.50473,51.50484,51.50494,51.50511,51.50517,51.50539,51.50552,51.50561,51.50566,51.50573,51.50595,51.50606,51.50614,51.5062,51.50623,51.50624,51.50623,51.5062,51.50624,51.50619,51.50611,51.50612,51.50615,51.50618,51.50625,51.50627,51.50633,51.50646,51.50661,51.5067,51.50682,51.50704,51.50727,51.50763,51.508,51.50819,51.50817,51.50813,51.50783,51.50757,51.50723,51.50701,51.50681,51.50664,51.5065,51.5064,51.50635,51.50628,51.50623,51.50621,51.50627,51.50631,51.50634]}]]],["E02003098","E02003098.1","E02003100","E02003101","E02003101.1","E02003110"],"desire_carshort",{"interactive":true,"className":"","pane":"tmap401","stroke":true,"color":["#0D0887","#F0F921","#0D0887","#0D0887","#F0F921","#FDB22F"],"weight":[9,9,9,9,9,9],"opacity":[0.6,0.6,0.6,0.6,0.6,0.6],"fill":false,"fillColor":["#0D0887","#F0F921","#0D0887","#0D0887","#F0F921","#FDB22F"],"fillOpacity":0.2,"dashArray":"none","smoothFactor":1,"noClip":false},["<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003098<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>323<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003098<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>457<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003100<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>331<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003101<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>329<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003101<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>440<\/nobr><\/td><\/tr><\/table><\/div>","<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>E02003110<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\">car_driver<\/td><td align=\"right\"><nobr>426<\/nobr><\/td><\/tr><\/table><\/div>"],null,["E02003098","E02003098","E02003100","E02003101","E02003101","E02003110"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#0D0887","#5F01A6","#9A169F","#CC4678","#ED7A52","#FDB22F","#F0F921"],"labels":["320 to 340","340 to 360","360 to 380","380 to 400","400 to 420","420 to 440","440 to 460"],"na_color":null,"na_label":"NA","opacity":0.6,"position":"topright","type":"unknown","title":"car_driver","extra":null,"layerId":"legend401","className":"info legend","group":"desire_carshort"}]},{"method":"addLayersControl","args":[["Esri.WorldGrayCanvas","OpenStreetMap","Esri.WorldTopoMap"],"desire_carshort",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]}],"limits":{"lat":[51.49476,51.55314],"lng":[-2.62851,-2.47957]},"fitBounds":[51.4944553559699,-2.61292959517455,51.5477375940589,-2.4801247092171,[]]},"evals":[],"jsHooks":[]}</script>
+<p>With <code>tmap_mode</code> set to <code>view</code> we get an interactive map. You can select the underlying layer you want to have (choose Open Street Map). This map shows that many short car trips take place in and around Bradley Stoke. It is easy to find explanations for the area’s high level of car dependency: according to Wikipedia, Bradley Stoke is “Europe’s largest new town built with private investment”, suggesting limited public transport provision. Furthermore, the town is surrounded by large (cycling unfriendly) road structures, “such as junctions on both the M4 and M5 motorways”</p>
+<p>There are many benefits of converting travel desire lines into likely routes of travel from a policy perspective, primary among them the ability to understand what it is about the surrounding environment that makes people travel by a particular mode.</p>
+</div>
+<div id="questions-and-handout" class="section level1">
+<h1><span class="header-section-number">7</span> Questions and Handout!</h1>
+<p>Your handout will be made of two parts: * Questions * Maps</p>
+<p>First the questions:</p>
+<ol style="list-style-type: decimal">
+<li>We have computed the desire lines along which a high (300+) number of car trips take place that are up to 5 km in distance. From a policy perspective how can this be used?</li>
+<li>The analysis presented in this chapter is designed for teaching how geocomputation methods can be applied to transport research. If you were to do this ‘for real’ for local government or a transport consultancy, what top 3 things would you do differently?</li>
+<li>What impacts can this kind of analysis have on the climate?</li>
+</ol>
+<p>Maps:</p>
+<ol style="list-style-type: decimal">
+<li>Map the number of people cycling per zones of Bristol</li>
+<li>On the last map we mapped the desired lines for the cars. Using the same dataset, do this for the bicycles.</li>
+</ol>
+<p>You should end up with something similar to the maps below. Add a title to the maps and if possible overlap your maps with StreetMap so we can vizualize Bristol area.</p>
+<pre><code>## tmap mode set to plotting</code></pre>
+<pre><code>## Warning: One tm layer group has duplicated layer types, which are omitted. To
+## draw multiple layers of the same type, use multiple layer groups (i.e. specify
+## tm_shape prior to each of them).
+
+## Warning: One tm layer group has duplicated layer types, which are omitted. To
+## draw multiple layers of the same type, use multiple layer groups (i.e. specify
+## tm_shape prior to each of them).</code></pre>
+<p><img src="Exercise_2_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

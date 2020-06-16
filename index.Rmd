@@ -1,0 +1,29 @@
+---
+title: ""
+output: 
+    html_document:
+      theme: lumen
+---
+
+## Welcome!
+
+Welcome to the page dedicated to the alternative exercises for GEOG 3527. Because of the COVID-19 situation, some of you may not have access to ArcGIS Pro from home we will work here with **R**. 
+
+R is an extremely versatile and widespread software used by some of the biggest companies including Facebook, Google, Twitter, AirBnB and much more. It can be used to do Statistical analysis but also GIS work.
+
+## Get started with R - Installation and basic manipulations
+
+Make sure you install on your computer and get comfortable with it. You will find the tutorial below. This tutorials are taken from the course GEOG2015.
+
+- [Get started with R - Introduction to R](https://bencretois.github.io/GEOG2015/IntroR.html)
+- [Get started with R - Basic manipulations in R](https://bencretois.github.io/GEOG2015/BasicR.html)
+- [Get started with R - Data frame manipulation in R](https://bencretois.github.io/GEOG2015/DFmanip.html)
+
+## Course exercises
+
+Once you have trained in R and done the small exercises from the tutorials you should be ready to do the exercises following the plan of the course. Below you will find a link to the exercises followed by a short description:
+
+- [Alternative Exercise 1](Exercise_1.html). In this exercise you will do some basic GIS analysis in R and draw some maps!
+- [Alternative Exercise 2](Exercise_2.html). In this exercise you will be introduced to transportation studies, how to build an optimal transport network!
+- [Alternative Exercise 3](Exercise_3.html). In this exercise you will be introduced to Line of Sight (LoS) analysis!
+- [Alternative Exercise 4](Exercise_4.html). In this exercise you will be introduced to analyzing satellite images!

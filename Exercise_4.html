@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Alternative exercise 4 - Satellite imagery, Part B</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEOG 3527 - GIS Tools for Climate Change Studies</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/BenCretois/GEOG2015">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Alternative exercise 4 - Satellite imagery, Part B</h1>
+
+</div>
+
+
+<div id="import-the-data-in-r" class="section level1">
+<h1><span class="header-section-number">1</span> Import the data in R</h1>
+<p>The satellite data provided as a NetCDF (Network Common Data Form) file. NetCDF files are used for storing multidimensional scientific data such as temperature, humidity, pressure, wind speed and direction.</p>
+<p>Many organizations and scientific groups in different countries have adopted netCDF as a standard way to represent some forms of scientific data and thus getting familiar with this kind of data is important.</p>
+<p>Contrary to ArcGIS, opening a .nc file in R is very straightforward. You will only need to install the library <code>raster</code> which is used quite extensively.</p>
+<pre class="r"><code>install.packages(&#39;raster)</code></pre>
+<p>Then you can upload the library in R</p>
+<pre class="r"><code>library(raster)</code></pre>
+<pre><code>## Loading required package: sp</code></pre>
+<p>Then you need to import the .nc file in R. For this you need to specify the “path”. Find your .nc file that you created in <strong>Part A</strong>, click right on it and find <strong>properties</strong> as shown below:</p>
+<p><img src="docs/Exercise_4/imgs/p.PNG" width="150%" /></p>
+<p>You can copy paste the path and use it to import your raster in R. Don’t forget to also write the name of your file. Finally you have all the information to import the raster in R. The .nc file has multiple bands contained in it. However, we are only interested in Land Surface Temperature, we need to specify this with the argument <code>varname</code>:</p>
+<pre class="r"><code># Import the raster
+area &lt;- raster(&#39;C:/Users/benjamcr/Rproj/AlternativeEx7/docs/data/MyArea.nc&#39;,
+               varname = &#39;LST&#39;)
+# Plot the raster to check 
+plot(area)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img1.PNG" width="150%" /> You can also have a more fancy vizualisation:</p>
+<pre class="r"><code># Load the library
+library(tmap)
+
+# Set tmap to interactive mode
+tmap_mode(&#39;view&#39;)</code></pre>
+<pre><code>## tmap mode set to interactive viewing</code></pre>
+<pre class="r"><code># plot
+tm_shape(area) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img2.PNG" width="150%" /> Now you should be able to visualize a raster showing the land surface temperature across part of Europe (note that the temperature is in Kelvin and not degree Celsius, we will convert the unit later in the exercise).</p>
+<p>Now it’s time to import the frames delaminating the area of interest that we provided on Blackboard.</p>
+<p>As done previously you need to find the path to your file and import it. The frame being a shapefile we need the library <code>sf</code> to load it.</p>
+<pre class="r"><code># Load library
+library(sf)
+
+# Import the frame
+frame &lt;- read_sf(&#39;C:/Users/benjamcr/Rproj/AlternativeEx7/docs/data/Frame_gcs/Frame_gcs.shp&#39;) 
+
+# Vizualize the shapefile
+tm_shape(frame) +
+  tm_polygons(alpha = .5) +
+tm_shape(area) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img3.PNG" width="150%" /> You will see 2 frames in the plots, these will be the two areas of interest.</p>
+</div>
+<div id="isolate-the-pixels-contained-in-the-areas-of-interest" class="section level1">
+<h1><span class="header-section-number">2</span> Isolate the pixels contained in the areas of interest</h1>
+<p>We are interested in identifying UHI and Urban Cold Islands only in the areas of interests. We will use the two frames to isolate the pixels located in the zone of interest. This is done using the function <code>mask</code>:</p>
+<pre class="r"><code># Extract area of raster by &quot;mask&quot;
+interest &lt;- mask(area, frame)
+
+# Vizualise if the operation has been successful
+tm_shape(frame) +
+  tm_polygons(alpha = .5) +
+tm_shape(interest) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img4.PNG" width="150%" /> # Convert unit and find the mean value of the study areas</p>
+<p>To make more sense of the data we first need to convert the degree Kelvin in degree Celsius.</p>
+<p>In R this is simple, we just need to substract the temperature in each cell by 273.15</p>
+<pre class="r"><code>interest_celsius &lt;- interest - 273.15</code></pre>
+<p>Then, to find the average temperature within your study areas you need to use the function <code>cellStat</code>:</p>
+<pre class="r"><code>mean &lt;- cellStats(interest_celsius, stat = &#39;mean&#39;, na.rm = TRUE)</code></pre>
+<p>What is the mean temperature in degree celsius in your study area?</p>
+</div>
+<div id="identify-urban-heat-islands-and-urban-cold-islands" class="section level1">
+<h1><span class="header-section-number">3</span> Identify urban heat islands and urban cold islands</h1>
+<p>Urban heat islands are defined as areas being one degree (or more) warmer than its surrounding. To isolate the pixels corresponding to this definition we do the following:</p>
+<pre class="r"><code># Isolate the pixels which are 1 degree higher than the mean temperature of the study area
+uhi &lt;- mask(x = interest_celsius, 
+            mask = interest_celsius &gt; (mean + 1), 
+            maskvalue = 0)
+
+# Isolate the pixels which are 1 degree below the mean temperature of the study area
+uci &lt;- mask(x = interest_celsius, 
+            mask = interest_celsius &lt; (mean - 1), 
+            maskvalue = 0)</code></pre>
+<pre class="r"><code># Plot Urban heat Islands
+tm_shape(uhi) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img5.PNG" width="150%" /></p>
+<pre class="r"><code># Plot Urban cool islands
+tm_shape(uci) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img6.PNG" width="150%" /></p>
+</div>
+<div id="import-the-human-footprint-index-to-your-map" class="section level1">
+<h1><span class="header-section-number">4</span> Import the Human Footprint index to your map</h1>
+<p>In the folder you downloaded on blackboard you will find a raster (.tif) layer of the human footprint (wildareas-v3-2009).</p>
+<p>The Human Footprint index is a measure of human disturbance across the landscape. Ranging from 0 to 50, the HFI is a raster representing multiple variables related to human impact on the landscape (e.g. the extent of built environment, cropland, pasture land, human population density, nighttime lights, railways, roads and navigable waterways). In this exercise we use the HFI as a proxy for <strong>built environment</strong>.</p>
+<p>To import it in R we use the same function as we did to import the raster of temperatures (don’t forget to update the path!):</p>
+<pre class="r"><code># Open the raster
+HFI &lt;- raster(&#39;docs/data/HumanFootprint/wildareas-v3-2009-human-footprint.tif&#39;)
+
+# R assigns values in the see, resulting in a wrong vizualisation. We know that the upper bound for Human Footprint is 50 so we need to extract the pixels that are 50 or less:
+
+#HFI &lt;- HFI[HFI &lt;= 50]
+
+# However I cannot do that here as the result is too large and is impossible to vizualize in this document
+
+# Vizualise the raster
+tm_shape(HFI) +
+  tm_raster(alpha = .5)</code></pre>
+</div>
+<div id="relationship-between-human-footprint-index-and-urban-heat-cold-islands" class="section level1">
+<h1><span class="header-section-number">5</span> Relationship between Human Footprint Index and Urban Heat / Cold Islands</h1>
+<p>In this section we will compare the human footprint between the Urban Heat Islands and the Urban Cold Islands. First you need to isolate the HFI pixels corresponding to the frames used to compute the UHI and UCI.</p>
+<p>This step is more complicated than the others as it requires us to <strong>re-project</strong> the HFI raster</p>
+<pre class="r"><code># We first extract the Coordinate Reference System (crs) of the raster because the Frame shapefile doesn&#39;t have the same crs
+c &lt;- crs(HFI)
+
+# We transform the CRS of frame using the CRS of human footprint
+frame_crs &lt;- st_transform(frame, c)
+
+# We crop the HFI raster on the extent of the Frame shapefile. We do that for computation ease, if we do the next operation on the full raster, this will take time
+hfi_frame &lt;- crop(HFI, frame_crs)
+
+# We isolate the pixels less or equal to 50 for the reason we mentioned above
+hfi_frame_correct &lt;- hfi_frame[hfi_frame&lt;50, drop = FALSE]
+
+# We finally reproject the raster using the crs of Frame
+pro &lt;- projectRaster(hfi_frame_correct, crs = crs(frame))
+
+# We quickly check if the operation has been successful
+plot(pro)
+plot(frame, add = TRUE)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img7.PNG" width="150%" /></p>
+<pre class="r"><code># Now we only isolate the zones of interest using the function mask as done previously
+m &lt;- mask(pro, frame)
+
+# We vizualise the result:
+tm_shape(m) +
+  tm_raster(alpha = .5)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img8.PNG" width="150%" /></p>
+</div>
+<div id="visualize-the-distribution-of-human-footprint-in-the-area-of-interest" class="section level1">
+<h1><span class="header-section-number">6</span> Visualize the distribution of Human Footprint in the area of interest</h1>
+<p>We will visually compare the distribution of Human Footprint within area of interest</p>
+<p>Nothing more simple ni R! You only need to use the function <code>hist</code>:</p>
+<pre class="r"><code>hist(m)</code></pre>
+<p><img src="docs/Exercise_4/imgs/img9.PNG" width="150%" /></p>
+</div>
+<div id="handout" class="section level1">
+<h1><span class="header-section-number">7</span> Handout</h1>
+<p>In your handout respond to the following questions:</p>
+<ol style="list-style-type: decimal">
+<li>What is the mean Human footprint of the area of interest? (use the <code>mean</code> function). Can you explain why? 2. Make a hypothesis of why there is some areas that are warmer than others? Change the base map and explore where are placed the pixels of UHI and UCI in the Human Footprint map 3. How would you test your hypothesis?</li>
+</ol>
+<p>Then include the following maps:</p>
+<ol style="list-style-type: decimal">
+<li>Include 2 maps, a map of the Urban Cold Islands in your study area and a map of the Urban Heat Islands in your study area. The maps need to be <strong>statics</strong> and not dynamic as in this document. See <code>tmap_mode</code> options.</li>
+<li>Include the 2 histograms of the Human Footprint in the ‘islands’ in your study area. Add some colors and change the axis names.</li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

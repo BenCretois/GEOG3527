@@ -1,0 +1,11 @@
+name: "GEOG 3527"
+output_dir: "."
+navbar:
+  title: "GEOG 3527 - GIS Tools for Climate Change Studies"
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/BenCretois/GEOG2015
+output:
+  html_document:
+    theme: paper
+    css: 'styles.css'
